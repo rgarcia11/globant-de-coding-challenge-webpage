@@ -1,46 +1,16 @@
+import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/new_employee_form.dart';
 import 'package:flutter/material.dart';
 
-class ChallengeLandingScreen extends StatefulWidget {
+class ChallengeLandingScreen extends StatelessWidget {
   const ChallengeLandingScreen({super.key});
-
-  @override
-  State<ChallengeLandingScreen> createState() => _ChallengeLandingScreenState();
-}
-
-class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
-  bool _buttonHovered = false;
 
   @override
   Widget build(BuildContext context) {
     bool isScreenWide = MediaQuery.of(context).size.width >= 768;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Globant',
-          style: TextStyle(fontSize: 28.0),
-        ), // Coolvetica font
-        centerTitle: false,
-        actions: [
-          ElevatedButton(
-            onPressed: () {},
-            onHover: (value) {
-              setState(() {
-                _buttonHovered = value;
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: const Color(0xFFC0D731),
-              backgroundColor: _buttonHovered
-                  ? const Color(0xFF8cc53f)
-                  : const Color(0xFFC0D731),
-            ),
-            child: const Text(
-              'SEE THE CHALLENGE',
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
+      appBar: const ChallengeAppBar(
+        landing: true,
       ),
       body: Stack(
         children: [
