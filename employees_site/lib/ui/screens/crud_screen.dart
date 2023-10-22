@@ -1,3 +1,4 @@
+import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class CrudScreen extends StatefulWidget {
@@ -10,6 +11,8 @@ class CrudScreen extends StatefulWidget {
 class _CrudScreenState extends State<CrudScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      appBar: ChallengeAppBar(),
+    );
   }
 }
