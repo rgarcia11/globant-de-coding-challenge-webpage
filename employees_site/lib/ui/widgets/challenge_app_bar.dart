@@ -1,3 +1,4 @@
+import 'package:employees_site/ui/screens/challenge_landing_screen.dart';
 import 'package:employees_site/ui/screens/crud_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,34 +19,46 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'Globant',
-        style: TextStyle(fontSize: 28.0),
+      automaticallyImplyLeading: false,
+      title: InkWell(
+        onTap: () {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const ChallengeLandingScreen(),
+            ),
+          );
+        },
+        child: const Text(
+          'Globant',
+          style: TextStyle(fontSize: 28.0),
+        ),
       ), // Coolvetica font
       centerTitle: false,
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const CrudScreen()));
-          },
-          onHover: (value) {
-            setState(() {
-              _buttonHovered = value;
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: const Color(0xFFC0D731),
-            backgroundColor: _buttonHovered
-                ? const Color(0xFF8cc53f)
-                : const Color(0xFFC0D731),
-          ),
-          child: const Text(
-            'SEE THE CHALLENGE',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ],
+      actions: widget.landing
+          ? [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const CrudScreen()));
+                },
+                onHover: (value) {
+                  setState(() {
+                    _buttonHovered = value;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color(0xFFC0D731),
+                  backgroundColor: _buttonHovered
+                      ? const Color(0xFF8cc53f)
+                      : const Color(0xFFC0D731),
+                ),
+                child: const Text(
+                  'SEE THE CHALLENGE',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ]
+          : [],
     );
   }
 }
