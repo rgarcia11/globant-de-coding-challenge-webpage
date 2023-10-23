@@ -1,7 +1,5 @@
 // ignore_for_file: unnecessary_string_interpolations
 
-import 'dart:math';
-
 import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/models/job_model.dart';
@@ -80,11 +78,6 @@ class _CrudScreenState extends State<CrudScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const CrudScreen()));
                     },
-                    onHover: (value) {
-                      setState(() {
-                        _loadCSVHovered = value;
-                      });
-                    },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: const Color(0xFFE0E0E0),
@@ -104,11 +97,6 @@ class _CrudScreenState extends State<CrudScreen> {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const CrudScreen()));
-                    },
-                    onHover: (value) {
-                      setState(() {
-                        _loadCSVHovered = value;
-                      });
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
