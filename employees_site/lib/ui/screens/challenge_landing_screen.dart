@@ -7,7 +7,6 @@ class ChallengeLandingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isScreenWide = MediaQuery.of(context).size.width >= 768;
     return Scaffold(
       appBar: const ChallengeAppBar(
         landing: true,
@@ -20,39 +19,43 @@ class ChallengeLandingScreen extends StatelessWidget {
             height: double.infinity,
             width: double.infinity,
           ),
-          Flex(
-            direction: isScreenWide ? Axis.horizontal : Axis.vertical,
+          const Row(
+            // direction: isScreenWide ? Axis.horizontal : Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
-              Text.rich(
-                TextSpan(
-                    style: TextStyle(
-                      fontSize: 48.0,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'Let us ',
-                        style: TextStyle(
-                          shadows: [
-                            Shadow(color: Colors.white, offset: Offset(0, -5.0))
-                          ],
-                          color: Colors.transparent,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xFFa0f4a4),
-                          decorationThickness: 2.0,
-                        ),
+            children: <Widget>[
+              Center(
+                child: Text.rich(
+                  TextSpan(
+                      style: TextStyle(
+                        fontSize: 48.0,
                       ),
-                      TextSpan(
-                        text: 'hire you',
-                        style: TextStyle(
-                          shadows: [
-                            Shadow(color: Colors.white, offset: Offset(0, -5.0))
-                          ],
-                          color: Colors.transparent,
+                      children: [
+                        TextSpan(
+                          text: 'Let us ',
+                          style: TextStyle(
+                            shadows: [
+                              Shadow(
+                                  color: Colors.white, offset: Offset(0, -5.0))
+                            ],
+                            color: Colors.transparent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Color(0xFFa0f4a4),
+                            decorationThickness: 2.0,
+                          ),
                         ),
-                      ),
-                    ]),
+                        TextSpan(
+                          text: 'hire you',
+                          style: TextStyle(
+                            shadows: [
+                              Shadow(
+                                  color: Colors.white, offset: Offset(0, -5.0))
+                            ],
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ]),
+                ),
               ), // Araboto font
               NewEmployeeForm(landing: true),
             ],
