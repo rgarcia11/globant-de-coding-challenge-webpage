@@ -1,11 +1,15 @@
 // ignore_for_file: unnecessary_string_interpolations
 
+import 'dart:math';
+
 import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/models/job_model.dart';
+import 'package:employees_site/core/services/departments_service.dart';
+import 'package:employees_site/core/services/employee_service.dart';
+import 'package:employees_site/core/services/jobs_service.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/entity_card.dart';
-import 'package:employees_site/core/services/departments_service.dart';
 import 'package:flutter/material.dart';
 
 enum Entity { departments, employees, jobs }
@@ -13,6 +17,10 @@ enum Entity { departments, employees, jobs }
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+
+  String trimLast() {
+    return "${substring(0, length - 1)}";
   }
 }
 
@@ -40,9 +48,9 @@ class _CrudScreenState extends State<CrudScreen> {
   }
 
   void initialize() async {
-    // _employees = await getAllEmployees();
     _departments = await DepartmentsService.getAllDepartments();
-    // _jobs = await getAllJobs();
+    _jobs = await JobsService.getAllJobs();
+    _employees = await EmployeesService.getAllEmployees();
   }
 
   @override
@@ -65,7 +73,59 @@ class _CrudScreenState extends State<CrudScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const CrudScreen()));
+                    },
+                    onHover: (value) {
+                      setState(() {
+                        _loadCSVHovered = value;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0xFFE0E0E0),
+                    ),
+                    child: Text(
+                      'Add ${_activeEntity.name}'.trimLast(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration:
+                              _loadCSVHovered ? TextDecoration.underline : null,
+                          decorationThickness: 2.0),
+                    ),
+                  ),
+                  const SizedBox(width: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const CrudScreen()));
+                    },
+                    onHover: (value) {
+                      setState(() {
+                        _loadCSVHovered = value;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0xFFE0E0E0),
+                    ),
+                    child: Text(
+                      'Find ${_activeEntity.name}'.trimLast(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration:
+                              _loadCSVHovered ? TextDecoration.underline : null,
+                          decorationThickness: 2.0),
+                    ),
+                  ),
+                ],
+              ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -103,8 +163,11 @@ class _CrudScreenState extends State<CrudScreen> {
                   crossAxisCount: 3,
                   crossAxisSpacing: 32.0,
                   mainAxisSpacing: 30.0,
-                  childAspectRatio:
-                      _activeEntity == Entity.employees ? 2.0 : 3.0,
+                  childAspectRatio: _activeEntity == Entity.employees
+                      ? MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 1.4)
+                      : MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 3.2),
                 ),
                 itemCount: _activeEntity == Entity.departments
                     ? _departments.length

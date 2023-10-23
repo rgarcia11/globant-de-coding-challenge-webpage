@@ -2,19 +2,19 @@
 
 import 'dart:convert';
 
-import 'package:employees_site/core/models/department_model.dart';
+import 'package:employees_site/core/models/job_model.dart';
 import 'package:employees_site/core/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
-class DepartmentsService {
-  static String service = 'department';
+class JobsService {
+  static String service = 'job';
 
-  Future<http.Response> uploadDepartments() {
+  Future<http.Response> uploadJobs() {
     // TODO: csv file
     return http.post(Uri.parse('${ApiConfig.baseUrl}/${service}s/upload'));
   }
 
-  static Future<List<Department>> getAllDepartments() async {
+  static Future<List<Job>> getAllJobs() async {
     Map<String, String> headers = {
       "Access-Control-Allow-Origin": "*", // Required for CORS support to work
       "Access-Control-Allow-Credentials":
@@ -26,15 +26,15 @@ class DepartmentsService {
       'Accept': '*/*'
     };
     final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/${DepartmentsService.service}s'),
+        Uri.parse('${ApiConfig.baseUrl}/${JobsService.service}s'),
         headers: headers);
     if (response.statusCode == 200) {
-      final departments = jsonDecode(response.body);
-      List<Department> departmentsList = [];
-      for (dynamic department in departments) {
-        departmentsList.add(Department.fromJson(department));
+      final jobs = jsonDecode(response.body);
+      List<Job> jobsList = [];
+      for (dynamic job in jobs) {
+        jobsList.add(Job.fromJson(job));
       }
-      return departmentsList;
+      return jobsList;
     } else {
       return [];
     }

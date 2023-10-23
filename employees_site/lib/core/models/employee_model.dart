@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Employee {
   int? id;
   String name;
@@ -16,9 +18,9 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
       id: json['id'],
       name: json['name'],
-      datetime: json['datetime'],
+      datetime: HttpDate.parse(json['datetime']),
       jobId: json['job_id'],
-      departmentId: json['departmentId']);
+      departmentId: json['department_id']);
 
   Map<String, dynamic> toJson() => {
         "id": id,
