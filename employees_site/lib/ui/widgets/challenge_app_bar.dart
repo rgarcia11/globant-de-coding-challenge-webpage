@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ChallengeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool landing;
-  const ChallengeAppBar({this.landing = false, super.key});
+  final List<Widget>? actions;
+  const ChallengeAppBar({this.landing = false, this.actions, super.key});
 
   @override
   State<ChallengeAppBar> createState() => _ChallengeAppBarState();
@@ -54,11 +55,12 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
                 ),
                 child: const Text(
                   'SEE THE CHALLENGE',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             ]
-          : [],
+          : widget.actions ?? [],
     );
   }
 }
