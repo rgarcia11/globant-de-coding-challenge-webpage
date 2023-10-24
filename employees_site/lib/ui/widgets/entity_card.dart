@@ -29,9 +29,9 @@ class EntityCard extends StatelessWidget {
                   color: Color(0xFFE0E0E0), spreadRadius: 1.0, blurRadius: 0.0)
             ],
             color: entity is Employee
-                // ? employeeProvider.isANewHire(entity.id)
-                ? const Color(0xFFC0D731)
-                // : Colors.white
+                ? employeeProvider.isANewHire(entity.id)
+                    ? const Color(0xFFC0D731)
+                    : Colors.white
                 : Colors.white,
             borderRadius: BorderRadius.zero,
           ),
@@ -111,10 +111,19 @@ class EntityCard extends StatelessWidget {
         ],
       );
     } else {
-      if (entity is Job) {}
-      return Column(
-        children: [
-          Text(entity is Job ? entity.job : entity.department),
+      columnContent.addAll(
+        [
+          Column(
+            children: [
+              Row(
+                children: [
+                  Icon(entity is Job ? Icons.work : Icons.corporate_fare),
+                  const SizedBox(width: 5.0),
+                  Text(entity is Job ? entity.job : entity.department),
+                ],
+              ),
+            ],
+          ),
         ],
       );
     }
