@@ -18,14 +18,16 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
       id: json['id'],
       name: json['name'],
-      datetime: HttpDate.parse(json['datetime']),
+      datetime: json['datetime'] == null
+          ? DateTime.now()
+          : HttpDate.parse(json['datetime']),
       jobId: json['job_id'],
       departmentId: json['department_id']);
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "datetime": datetime,
+        "datetime": HttpDate.format(datetime),
         "jobId": jobId,
         "departmentId": departmentId
       };
