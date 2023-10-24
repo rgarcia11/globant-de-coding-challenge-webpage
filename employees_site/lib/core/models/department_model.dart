@@ -10,5 +10,5 @@ class Department {
   factory Department.fromJson(Map<String, dynamic> json) =>
       Department(id: json['id'], department: json['department']);
 
-  Map<String, dynamic> toJson() => {"id": id, "department": department};
+  Map<String, dynamic> toJson() => {"department": department};
 }

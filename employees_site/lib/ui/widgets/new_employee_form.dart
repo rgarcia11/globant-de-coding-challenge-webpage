@@ -1,9 +1,15 @@
 import 'dart:convert';
 
+import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/models/employee_model.dart';
+import 'package:employees_site/core/models/job_model.dart';
+import 'package:employees_site/core/providers/department_provider.dart';
+import 'package:employees_site/core/providers/employee_provider.dart';
+import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/core/services/chatgpt_service.dart';
 import 'package:employees_site/core/services/employee_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NewEmployeeForm extends StatefulWidget {
   final bool landing;
@@ -82,14 +88,22 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                   } else {
                     Map<String, dynamic> newEmployee = jsonDecode(answer);
                     // TODO: Look for department id and job id to complete it
-                    newEmployee.addAll({"department_id": 0, "job_id": 0});
+                    DepartmentProvider departmentProvider =
+                        context.read<DepartmentProvider>();
+                    JobProvider jobProvider = context.read<JobProvider>();
+                    EmployeeProvider employeeProvider =
+                        context.read<EmployeeProvider>();
+                    Job? job =
+                        await jobProvider.getJobByName(newEmployee['job']);
+                    Department? department = await departmentProvider
+                        .getDepartmentByName(newEmployee['department']);
+                    newEmployee.addAll(
+                        {"department_id": department!.id, "job_id": job!.id});
                     newEmployee.remove('department');
                     newEmployee.remove('job');
-                    print(newEmployee);
-                    print("------------------");
                     Employee newEmployeeObject = Employee.fromJson(newEmployee);
-                    print("------------------");
-                    EmployeesService.createEmployee(newEmployeeObject);
+                    String res = await EmployeesService.createEmployee(
+                        newEmployeeObject);
                   }
                 },
                 onHover: (value) {
