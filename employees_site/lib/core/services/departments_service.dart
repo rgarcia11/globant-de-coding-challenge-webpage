@@ -15,19 +15,9 @@ class DepartmentsService {
   }
 
   static Future<List<Department>> getAllDepartments() async {
-    Map<String, String> headers = {
-      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-      "Access-Control-Allow-Credentials":
-          'true', // Required for cookies, authorization headers with HTTPS
-      "Access-Control-Allow-Headers":
-          "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-      "Access-Control-Allow-Methods": "POST, OPTIONS, GET, PUT, DELETE",
-      'Content-Type': 'application/json',
-      'Accept': '*/*'
-    };
     final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/${DepartmentsService.service}s'),
-        headers: headers);
+        headers: ApiConfig.headers);
     if (response.statusCode == 200) {
       final departments = jsonDecode(response.body);
       List<Department> departmentsList = [];
@@ -40,13 +30,13 @@ class DepartmentsService {
     }
   }
 
-  static Future<String> createDepartment(Department newDepartment) async {
+  static Future<Department> createDepartment(Department newDepartment) async {
     final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/${DepartmentsService.service}'),
         headers: ApiConfig.headers,
         body: jsonEncode(newDepartment.toJson()));
 
-    final res = jsonDecode(response.body);
+    final res = Department.fromJson(jsonDecode(response.body));
     return res;
   }
 }

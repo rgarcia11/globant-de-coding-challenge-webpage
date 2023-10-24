@@ -21,7 +21,7 @@ class JobProvider extends ChangeNotifier {
     }
 
     setJobs(jobs);
-
+    notifyListeners();
     return jobs;
   }
 

@@ -1,6 +1,10 @@
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/models/job_model.dart';
+import 'package:employees_site/core/providers/department_provider.dart';
+import 'package:employees_site/core/providers/employee_provider.dart';
+import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EntityCard extends StatelessWidget {
   final dynamic entity;
@@ -8,45 +12,104 @@ class EntityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 20.0, top: 35.0, bottom: 28.0),
-      decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(width: 4.0, color: Color(0xFFC0D731)),
-          right: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
-          bottom: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
-          left: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
+    EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(left: 20.0, top: 35.0, bottom: 28.0),
+          decoration: BoxDecoration(
+            border: const Border(
+              top: BorderSide(width: 4.0, color: Color(0xFFC0D731)),
+              right: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
+              bottom: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
+              left: BorderSide(width: 0.0, color: Color(0xFFC0D731)),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                  color: Color(0xFFE0E0E0), spreadRadius: 1.0, blurRadius: 0.0)
+            ],
+            color: entity is Employee
+                // ? employeeProvider.isANewHire(entity.id)
+                ? const Color(0xFFC0D731)
+                // : Colors.white
+                : Colors.white,
+            borderRadius: BorderRadius.zero,
+          ),
+          child:
+              Align(alignment: Alignment.bottomLeft, child: buildCardContent()),
         ),
-        boxShadow: [
-          BoxShadow(
-              color: Color(0xFFE0E0E0), spreadRadius: 1.0, blurRadius: 0.0)
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.zero,
-      ),
-      height: entity == Employee ? 520 : 320,
-      child: Align(alignment: Alignment.bottomLeft, child: buildCardContent()),
+        entity is Employee
+            ? employeeProvider.isANewHire(entity.id)
+                ? Positioned(
+                    top: -5.0,
+                    right: 15.0,
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                              spreadRadius: 1.0,
+                              blurRadius: 5.0,
+                              color: Colors.grey,
+                              offset: Offset(0, 5))
+                        ],
+                        color: entity is Employee
+                            ? employeeProvider.isANewHire(entity.id)
+                                ? const Color(0xFFC0D731)
+                                : Colors.white
+                            : Colors.white,
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      child: const Text('NEW'),
+                    ),
+                  )
+                : Container()
+            : Container(),
+      ],
     );
   }
 
   Widget buildCardContent() {
     List<Widget> columnContent = [];
     if (entity is Employee) {
-      columnContent.addAll([
-        Text(
-          entity.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
+      columnContent.addAll(
+        [
+          Text(
+            entity.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+            ),
           ),
-        ),
-        Row(children: [
-          const Icon(Icons.corporate_fare),
-          Text('${entity.departmentId}')
-        ]),
-        Row(children: [const Icon(Icons.work), Text('${entity.jobId}')]),
-        Text('Since ${entity.datetime}'),
-      ]);
+          Row(
+            children: [
+              const Icon(Icons.corporate_fare),
+              const SizedBox(width: 5.0),
+              Consumer<DepartmentProvider>(
+                builder: (context, departmentProvider, child) {
+                  String departmentName = departmentProvider
+                      .getDepartmentById(entity.departmentId)!
+                      .department;
+                  return Text(departmentName);
+                },
+              )
+            ],
+          ),
+          Row(
+            children: [
+              const Icon(Icons.work),
+              const SizedBox(width: 5.0),
+              Consumer<JobProvider>(
+                builder: (context, jobProvider, child) {
+                  String jobName = jobProvider.getJobById(entity.jobId)!.job;
+                  return Text(jobName);
+                },
+              )
+            ],
+          ),
+          Text('Since ${entity.datetime}'),
+        ],
+      );
     } else {
       if (entity is Job) {}
       return Column(
@@ -55,42 +118,45 @@ class EntityCard extends StatelessWidget {
         ],
       );
     }
-    columnContent.addAll([
-      const Text(
-        'Five ch',
-        style: TextStyle(
-            color: Colors.transparent,
-            decoration: TextDecoration.underline,
-            decorationThickness: 1.5),
-      ),
-      TextButton(
-        onPressed: () {
-          // TODO: Enter edit form
-        },
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.all(0.0),
-          shadowColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
+    columnContent.addAll(
+      [
+        const Text(
+          'Five ch',
+          style: TextStyle(
+              color: Colors.transparent,
+              decoration: TextDecoration.underline,
+              decorationThickness: 1.5),
         ),
-        child: const Row(
-          children: [
-            Text(
-              'See details',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
+        TextButton(
+          onPressed: () {
+            // TODO: Enter edit form
+          },
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(0.0),
+            shadowColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.transparent,
+          ),
+          child: const Row(
+            children: [
+              Text(
+                'See details',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                ),
               ),
-            ),
-            Icon(
-              Icons.arrow_forward,
-              color: Colors.black,
-            ),
-          ],
-        ),
-      ) // TODO: Copy format from other flat buttons
-    ]);
+              SizedBox(width: 5.0),
+              Icon(
+                Icons.arrow_forward,
+                color: Colors.black,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: columnContent,
