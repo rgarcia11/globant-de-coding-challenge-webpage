@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:employees_site/core/models/employee_model.dart';
+import 'package:employees_site/core/services/chatgpt_service.dart';
+import 'package:employees_site/core/services/employee_service.dart';
 import 'package:flutter/material.dart';
 
 class NewEmployeeForm extends StatefulWidget {
@@ -9,7 +14,7 @@ class NewEmployeeForm extends StatefulWidget {
 }
 
 class _NewEmployeeFormState extends State<NewEmployeeForm> {
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
   bool _buttonHovered = false;
 
   @override
@@ -69,8 +74,23 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
               ),
               const SizedBox(height: 22.0),
               ElevatedButton(
-                onPressed: () {
-                  // TODO: add employee
+                onPressed: () async {
+                  String? answer =
+                      await newUserChatGPT(_textFieldController.text);
+                  if (answer == null) {
+                    // TODO: Inform user
+                  } else {
+                    Map<String, dynamic> newEmployee = jsonDecode(answer);
+                    // TODO: Look for department id and job id to complete it
+                    newEmployee.addAll({"department_id": 0, "job_id": 0});
+                    newEmployee.remove('department');
+                    newEmployee.remove('job');
+                    print(newEmployee);
+                    print("------------------");
+                    Employee newEmployeeObject = Employee.fromJson(newEmployee);
+                    print("------------------");
+                    EmployeesService.createEmployee(newEmployeeObject);
+                  }
                 },
                 onHover: (value) {
                   setState(() {
