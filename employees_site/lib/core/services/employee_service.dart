@@ -15,19 +15,9 @@ class EmployeesService {
   }
 
   static Future<List<Employee>> getAllEmployees() async {
-    Map<String, String> headers = {
-      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-      "Access-Control-Allow-Credentials":
-          'true', // Required for cookies, authorization headers with HTTPS
-      "Access-Control-Allow-Headers":
-          "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-      "Access-Control-Allow-Methods": "POST, OPTIONS, GET, PUT, DELETE",
-      'Content-Type': 'application/json',
-      'Accept': '*/*'
-    };
     final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/${EmployeesService.service}s'),
-        headers: headers);
+        headers: ApiConfig.headers);
     if (response.statusCode == 200) {
       final employees = jsonDecode(response.body);
       List<Employee> employeesList = [];
@@ -38,5 +28,15 @@ class EmployeesService {
     } else {
       return [];
     }
+  }
+
+  static Future<String> createEmployee(Employee newEmployee) async {
+    final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/${EmployeesService.service}'),
+        headers: ApiConfig.headers,
+        body: jsonEncode(newEmployee.toJson()));
+
+    final res = jsonDecode(response.body);
+    return res;
   }
 }
