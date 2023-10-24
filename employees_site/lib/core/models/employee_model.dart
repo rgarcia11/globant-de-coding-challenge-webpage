@@ -28,7 +28,7 @@ class Employee {
         "id": id,
         "name": name,
         "datetime": HttpDate.format(datetime),
-        "jobId": jobId,
-        "departmentId": departmentId
+        "job_id": jobId,
+        "department_id": departmentId
       };
 }
