@@ -1,14 +1,12 @@
 // ignore_for_file: unnecessary_string_interpolations
 
-import 'package:employees_site/core/models/department_model.dart';
-import 'package:employees_site/core/models/employee_model.dart';
-import 'package:employees_site/core/models/job_model.dart';
-import 'package:employees_site/core/services/departments_service.dart';
-import 'package:employees_site/core/services/employee_service.dart';
-import 'package:employees_site/core/services/jobs_service.dart';
+import 'package:employees_site/core/providers/department_provider.dart';
+import 'package:employees_site/core/providers/employee_provider.dart';
+import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/entity_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum Entity { departments, employees, jobs }
 
@@ -35,9 +33,6 @@ class _CrudScreenState extends State<CrudScreen> {
   bool _employeesHovered = false;
   bool _jobsHovered = false;
   bool _loadCSVHovered = false;
-  List<Employee> _employees = [];
-  List<Job> _jobs = [];
-  List<Department> _departments = [];
 
   @override
   void initState() {
@@ -45,14 +40,27 @@ class _CrudScreenState extends State<CrudScreen> {
     initialize();
   }
 
-  void initialize() async {
-    _departments = await DepartmentsService.getAllDepartments();
-    _jobs = await JobsService.getAllJobs();
-    _employees = await EmployeesService.getAllEmployees();
-  }
+  void initialize() async {}
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double nonEmployeeAspectRatio = height < 890
+        ? MediaQuery.of(context).size.width /
+            (MediaQuery.of(context).size.height / 2.8)
+        : height < 600
+            ? MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 1.8)
+            : MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 3.2);
+    double employeeAspectRatio = height < 850
+        ? MediaQuery.of(context).size.width /
+            (MediaQuery.of(context).size.height / 1.1)
+        : height < 760
+            ? MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 0.1)
+            : MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 1.25);
     return Scaffold(
       appBar: ChallengeAppBar(
         actions: [
@@ -145,28 +153,37 @@ class _CrudScreenState extends State<CrudScreen> {
           ),
           const SizedBox(height: 30.0),
           Expanded(
-            child: GridView.builder(
-                // TODO: Bring the backend here
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 32.0,
-                  mainAxisSpacing: 30.0,
-                  childAspectRatio: _activeEntity == Entity.employees
-                      ? MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height / 1.4)
-                      : MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height / 3.2),
-                ),
-                itemCount: _activeEntity == Entity.departments
-                    ? _departments.length
-                    : _activeEntity == Entity.jobs
-                        ? _jobs.length
-                        : _employees.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return EntityCard(
-                    entity: getEntity(index),
-                  );
-                }),
+            child: Consumer<EmployeeProvider>(
+                builder: (context, employeeProvider, child) {
+              return Consumer<DepartmentProvider>(
+                  builder: (context, departmentProvider, child) {
+                return Consumer<JobProvider>(
+                  builder: (context, jobProvider, child) {
+                    return GridView.builder(
+                      // TODO: Bring the backend here
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 32.0,
+                        mainAxisSpacing: 30.0,
+                        childAspectRatio: _activeEntity == Entity.employees
+                            ? employeeAspectRatio
+                            : nonEmployeeAspectRatio,
+                      ),
+                      itemCount: _activeEntity == Entity.departments
+                          ? departmentProvider.departments.length
+                          : _activeEntity == Entity.jobs
+                              ? jobProvider.jobs.length
+                              : employeeProvider.employees.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return EntityCard(
+                          entity: getEntity(index),
+                        );
+                      },
+                    );
+                  },
+                );
+              });
+            }),
           ),
         ],
       ),
@@ -174,12 +191,15 @@ class _CrudScreenState extends State<CrudScreen> {
   }
 
   dynamic getEntity(int index) {
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    JobProvider jobProvider = context.read<JobProvider>();
+    EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
     if (_activeEntity == Entity.departments) {
-      return _departments[index];
+      return departmentProvider.departments[index];
     } else if (_activeEntity == Entity.jobs) {
-      return _jobs[index];
+      return jobProvider.jobs[index];
     } else {
-      return _employees[index];
+      return employeeProvider.employees[index];
     }
   }
 

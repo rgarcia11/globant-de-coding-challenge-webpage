@@ -10,5 +10,5 @@ class Job {
   factory Job.fromJson(Map<String, dynamic> json) =>
       Job(id: json['id'], job: json['job']);
 
-  Map<String, dynamic> toJson() => {"id": id, "job": job};
+  Map<String, dynamic> toJson() => {"job": job};
 }

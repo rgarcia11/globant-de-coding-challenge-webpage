@@ -39,4 +39,14 @@ class DepartmentsService {
       return [];
     }
   }
+
+  static Future<String> createDepartment(Department newDepartment) async {
+    final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/${DepartmentsService.service}'),
+        headers: ApiConfig.headers,
+        body: jsonEncode(newDepartment.toJson()));
+
+    final res = jsonDecode(response.body);
+    return res;
+  }
 }
