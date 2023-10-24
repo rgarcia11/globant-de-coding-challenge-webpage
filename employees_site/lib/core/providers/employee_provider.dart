@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 class EmployeeProvider extends ChangeNotifier {
   Map<int, Employee> employeesMap = {};
   List<Employee> employees = [];
+  List<Employee> hiredEmployees = [];
 
   EmployeeProvider() {
     getAllEmployees();
@@ -15,18 +16,35 @@ class EmployeeProvider extends ChangeNotifier {
   Future<List<Employee>> getAllEmployees() async {
     employees = [];
     try {
-      employees.addAll(await EmployeesService.getAllEmployees());
+      List<Employee> employeeList = await EmployeesService.getAllEmployees();
+      employees.addAll(employeeList);
     } catch (error) {
       print('Error in employee_provder.getEmployees: $error');
     }
-
+    sortEmployees();
     setEmployees(employees);
-
+    notifyListeners();
     return employees;
   }
 
   Employee? getEmployeeById(int id) {
     return employeesMap[id];
+  }
+
+  void hireEmployee(Employee newEmployee) {
+    employees = [newEmployee, ...employees];
+    hiredEmployees.add(newEmployee);
+    notifyListeners();
+    setEmployees([newEmployee]);
+  }
+
+  bool isANewHire(int employeeId) {
+    return hiredEmployees.fold(false, (isNewHire, Employee e) {
+      if (isNewHire || e.id == employeeId) {
+        return true;
+      }
+      return false;
+    });
   }
 
   void setEmployees(List<Employee> employees) {
@@ -39,6 +57,16 @@ class EmployeeProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  void sortEmployees() {
+    employees.sort(
+      (Employee a, Employee b) {
+        DateTime adate = a.datetime;
+        DateTime bdate = b.datetime;
+        return bdate.compareTo(adate);
+      },
+    );
   }
 
   void _terminate() async {
