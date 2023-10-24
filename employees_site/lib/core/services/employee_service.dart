@@ -30,13 +30,13 @@ class EmployeesService {
     }
   }
 
-  static Future<String> createEmployee(Employee newEmployee) async {
+  static Future<Employee> createEmployee(Employee newEmployee) async {
     final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/${EmployeesService.service}'),
         headers: ApiConfig.headers,
         body: jsonEncode(newEmployee.toJson()));
 
-    final res = jsonDecode(response.body);
+    final res = Employee.fromJson(jsonDecode(response.body));
     return res;
   }
 }
