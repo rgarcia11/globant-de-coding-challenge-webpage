@@ -8,6 +8,7 @@ import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/core/services/chatgpt_service.dart';
 import 'package:employees_site/core/services/employee_service.dart';
+import 'package:employees_site/ui/screens/crud_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -86,24 +87,29 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                   if (answer == null) {
                     // TODO: Inform user
                   } else {
-                    Map<String, dynamic> newEmployee = jsonDecode(answer);
-                    // TODO: Look for department id and job id to complete it
-                    DepartmentProvider departmentProvider =
-                        context.read<DepartmentProvider>();
-                    JobProvider jobProvider = context.read<JobProvider>();
-                    EmployeeProvider employeeProvider =
-                        context.read<EmployeeProvider>();
-                    Job? job =
-                        await jobProvider.getJobByName(newEmployee['job']);
-                    Department? department = await departmentProvider
-                        .getDepartmentByName(newEmployee['department']);
-                    newEmployee.addAll(
-                        {"department_id": department!.id, "job_id": job!.id});
-                    newEmployee.remove('department');
-                    newEmployee.remove('job');
-                    Employee newEmployeeObject = Employee.fromJson(newEmployee);
-                    String res = await EmployeesService.createEmployee(
-                        newEmployeeObject);
+                    if (context.mounted) {
+                      Map<String, dynamic> newEmployee = jsonDecode(answer);
+                      // TODO: Look for department id and job id to complete it
+                      DepartmentProvider departmentProvider =
+                          context.read<DepartmentProvider>();
+                      JobProvider jobProvider = context.read<JobProvider>();
+                      EmployeeProvider employeeProvider =
+                          context.read<EmployeeProvider>();
+                      Job? job =
+                          await jobProvider.getJobByName(newEmployee['job']);
+                      Department? department = await departmentProvider
+                          .getDepartmentByName(newEmployee['department']);
+                      newEmployee.addAll(
+                          {"department_id": department!.id, "job_id": job!.id});
+                      newEmployee.remove('department');
+                      newEmployee.remove('job');
+                      Employee createdEmployee =
+                          await EmployeesService.createEmployee(
+                              Employee.fromJson(newEmployee));
+                      employeeProvider.hireEmployee(createdEmployee);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const CrudScreen()));
+                    }
                   }
                 },
                 onHover: (value) {

@@ -21,7 +21,7 @@ class DepartmentProvider extends ChangeNotifier {
     }
 
     setDepartments(departments);
-
+    notifyListeners();
     return departments;
   }
 
