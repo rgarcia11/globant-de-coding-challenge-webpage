@@ -39,4 +39,14 @@ class JobsService {
       return [];
     }
   }
+
+  static Future<String> createJob(Job newJob) async {
+    final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/${JobsService.service}'),
+        headers: ApiConfig.headers,
+        body: jsonEncode(newJob.toJson()));
+
+    final res = jsonDecode(response.body);
+    return res;
+  }
 }

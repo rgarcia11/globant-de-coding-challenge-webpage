@@ -1,9 +1,30 @@
+import 'package:employees_site/core/providers/department_provider.dart';
+import 'package:employees_site/core/providers/employee_provider.dart';
+import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/new_employee_form.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ChallengeLandingScreen extends StatelessWidget {
+class ChallengeLandingScreen extends StatefulWidget {
   const ChallengeLandingScreen({super.key});
+
+  @override
+  State<ChallengeLandingScreen> createState() => _ChallengeLandingScreenState();
+}
+
+class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  void _init() async {
+    context.read<DepartmentProvider>();
+    context.read<JobProvider>();
+    context.read<EmployeeProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
