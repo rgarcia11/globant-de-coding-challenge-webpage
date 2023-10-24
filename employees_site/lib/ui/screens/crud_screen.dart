@@ -45,20 +45,20 @@ class _CrudScreenState extends State<CrudScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double nonEmployeeAspectRatio = height < 890
+    double nonEmployeeAspectRatio = height < 750
         ? MediaQuery.of(context).size.width /
-            (MediaQuery.of(context).size.height / 2.8)
-        : height < 600
+            (MediaQuery.of(context).size.height / 1.4)
+        : height < 820
             ? MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 1.8)
+                (MediaQuery.of(context).size.height / 1.6)
             : MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 3.2);
+                (MediaQuery.of(context).size.height / 1.8);
     double employeeAspectRatio = height < 850
         ? MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 1.1)
         : height < 760
             ? MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 0.1)
+                (MediaQuery.of(context).size.height / 0.09)
             : MediaQuery.of(context).size.width /
                 (MediaQuery.of(context).size.height / 1.25);
     return Scaffold(
@@ -76,6 +76,7 @@ class _CrudScreenState extends State<CrudScreen> {
             '${_activeEntity.name.capitalize()}',
             style: const TextStyle(fontSize: 34.0),
           ),
+          const SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

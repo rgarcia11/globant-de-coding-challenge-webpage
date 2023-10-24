@@ -77,19 +77,45 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                       width: 1.0,
                     ),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF0E0E0E),
+                      width: 1.0,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: () async {
+                  print('before dialog)');
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        content: Container(
+                          width: 260.0,
+                          height: 260.0,
+                          color: Colors.white,
+                          child: const CircularProgressIndicator(
+                              color: Color(0xFFa0f4a4),
+                              backgroundColor: Colors.white,
+                              strokeWidth: 5.0),
+                        ),
+                      );
+                    },
+                  );
                   String? answer =
                       await newUserChatGPT(_textFieldController.text);
                   if (answer == null) {
-                    // TODO: Inform user
+                    // TODO: Error message
+                    Navigator.of(context).pop();
                   } else {
                     if (context.mounted) {
                       Map<String, dynamic> newEmployee = jsonDecode(answer);
-                      // TODO: Look for department id and job id to complete it
                       DepartmentProvider departmentProvider =
                           context.read<DepartmentProvider>();
                       JobProvider jobProvider = context.read<JobProvider>();
