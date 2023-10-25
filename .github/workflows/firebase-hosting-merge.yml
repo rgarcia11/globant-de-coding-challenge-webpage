@@ -22,7 +22,7 @@ jobs:
       - name: Enter Project Root0
         run: cd employees_site
       - name: Enter Project Root
-        run: cd employees_site
+        run: cd ./employees_site/
       - name: Enter Project Root2
         run: pwd
       - name: Enter Project Root3
