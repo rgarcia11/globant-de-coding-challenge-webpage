@@ -86,7 +86,7 @@ class _CrudScreenState extends State<CrudScreen> {
                   child: CustomScrollView(
                     slivers: [
                       SliverToBoxAdapter(
-                        child: Image.asset('assets/banner.png'),
+                        child: Image.asset('assets/Banner.png'),
                       ),
                       const SliverToBoxAdapter(
                         child: SizedBox(height: 50.0),
