@@ -109,7 +109,6 @@ class _HireEmployeeFormState extends State<HireEmployeeForm> {
                   String? answer = await ChatGPTService()
                       .hireEmployeeChatGPT(_textFieldController.text);
                   if (answer == null) {
-                    // TODO: Error message
                     Navigator.of(context).pop();
                   } else {
                     if (context.mounted) {

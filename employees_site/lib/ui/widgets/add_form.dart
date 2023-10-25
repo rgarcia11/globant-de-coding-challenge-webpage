@@ -81,26 +81,19 @@ class _AddFormState extends State<AddForm> {
                       );
                     },
                   );
-                  print('Gato 1 botate');
                   String? answer;
                   if (context.mounted) {
                     ChatGPTService chatGPTService = ChatGPTService();
-                    print('GATOTE INVESTIGADOR!! ${_textFieldController.text}');
                     if (widget.activeEntity == Entity.employees) {
                       answer = await chatGPTService
                           .addEmployeeChatGPT(_textFieldController.text);
                     } else if (widget.activeEntity == Entity.departments) {
-                      print('ush gatisimo');
-                      print(answer);
                       answer = await chatGPTService
                           .addDepartmentChatGPT(_textFieldController.text);
-                      print(answer);
                     } else if (widget.activeEntity == Entity.jobs) {
                       answer = await chatGPTService
                           .addJobChatGPT(_textFieldController.text);
                     }
-                    print('Gato 2 botate');
-                    print(answer);
 
                     DepartmentProvider departmentProvider =
                         context.read<DepartmentProvider>();
@@ -108,7 +101,6 @@ class _AddFormState extends State<AddForm> {
                         context.read<EmployeeProvider>();
                     JobProvider jobProvider = context.read<JobProvider>();
                     if (answer == null) {
-                      // TODO: Error message
                       Navigator.of(context).pop();
                     } else {
                       if (widget.activeEntity == Entity.employees) {
@@ -128,15 +120,11 @@ class _AddFormState extends State<AddForm> {
                                 Employee.fromJson(newEmployee));
                         employeeProvider.hireEmployee(createdEmployee);
                       } else if (widget.activeEntity == Entity.departments) {
-                        print('Gato vol. 2.1');
                         Map<String, dynamic> newDepartment = jsonDecode(answer);
-                        print('Gato vol. 2.2');
                         Department createdDepartment =
                             await DepartmentsService.createDepartment(
                                 Department.fromJson(newDepartment));
-                        print('Gato vol. 2.3');
                         departmentProvider.createDepartment(createdDepartment);
-                        print('Gato vol. 2.4');
                       } else if (widget.activeEntity == Entity.jobs) {
                         Map<String, dynamic> newJob = jsonDecode(answer);
                         Job createdJob =

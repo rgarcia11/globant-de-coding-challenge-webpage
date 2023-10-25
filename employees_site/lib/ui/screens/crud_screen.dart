@@ -8,6 +8,7 @@ import 'package:employees_site/core/services/employee_service.dart';
 import 'package:employees_site/ui/widgets/add_form.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/entity_card.dart';
+import 'package:employees_site/ui/widgets/filter_form.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,9 @@ class _CrudScreenState extends State<CrudScreen> {
   bool _employeesHovered = false;
   bool _jobsHovered = false;
   bool _loadCSVHovered = false;
+  bool _addHovered = false;
+  bool _filterHovered = false;
+  bool _deleteHovered = false;
   bool _employeesHiredHovered = false;
   bool _departmentsOverMeanHovered = false;
   double pagePadding = 140.0;
@@ -110,7 +114,37 @@ class _CrudScreenState extends State<CrudScreen> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
+                                      showFilterDialog();
+                                    },
+                                    onHover: (value) {
+                                      setState(() {
+                                        _filterHovered = value;
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                      backgroundColor: const Color(0xFFE0E0E0),
+                                    ),
+                                    child: Text(
+                                      'Filter',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: _filterHovered
+                                              ? TextDecoration.underline
+                                              : null,
+                                          decorationThickness: 2.0),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20.0),
+                                  ElevatedButton(
+                                    onPressed: () {
                                       showAddDialog();
+                                    },
+                                    onHover: (value) {
+                                      setState(() {
+                                        _addHovered = value;
+                                      });
                                     },
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black,
@@ -121,7 +155,7 @@ class _CrudScreenState extends State<CrudScreen> {
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          decoration: _loadCSVHovered
+                                          decoration: _addHovered
                                               ? TextDecoration.underline
                                               : null,
                                           decorationThickness: 2.0),
@@ -130,30 +164,6 @@ class _CrudScreenState extends State<CrudScreen> {
                                   const SizedBox(width: 20.0),
                                   ElevatedButton(
                                     onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CrudScreen()));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.black,
-                                      backgroundColor: const Color(0xFFE0E0E0),
-                                    ),
-                                    child: Text(
-                                      'Find ${_activeEntity.name}'.trimLast(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: _loadCSVHovered
-                                              ? TextDecoration.underline
-                                              : null,
-                                          decorationThickness: 2.0),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20.0),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // TODO DELETE
                                       if (_activeEntity == Entity.employees) {
                                         employeeProvider.deleteAllEmployees();
                                       } else if (_activeEntity ==
@@ -163,6 +173,11 @@ class _CrudScreenState extends State<CrudScreen> {
                                       } else if (_activeEntity == Entity.jobs) {
                                         jobProvider.deleteAllJobs();
                                       }
+                                    },
+                                    onHover: (value) {
+                                      setState(() {
+                                        _deleteHovered = value;
+                                      });
                                     },
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black,
@@ -174,7 +189,7 @@ class _CrudScreenState extends State<CrudScreen> {
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          decoration: _loadCSVHovered
+                                          decoration: _deleteHovered
                                               ? TextDecoration.underline
                                               : null,
                                           decorationThickness: 2.0),
@@ -196,7 +211,6 @@ class _CrudScreenState extends State<CrudScreen> {
                                               showResultDialog(
                                                   employeesHiredByQuarter);
                                             }
-                                            ;
                                           },
                                           onHover: (value) {
                                             setState(() {
@@ -274,7 +288,7 @@ class _CrudScreenState extends State<CrudScreen> {
                                       : Container(),
                                   _activeEntity == Entity.jobs
                                       ? Container()
-                                      : SizedBox(width: 20.0),
+                                      : const SizedBox(width: 20.0),
                                   ElevatedButton(
                                     onPressed: () async {
                                       FilePickerResult? result =
@@ -341,10 +355,10 @@ class _CrudScreenState extends State<CrudScreen> {
                           ),
                           delegate: SliverChildBuilderDelegate(
                             childCount: _activeEntity == Entity.departments
-                                ? departmentProvider.departments.length
+                                ? departmentProvider.filteredDepartments.length
                                 : _activeEntity == Entity.jobs
-                                    ? jobProvider.jobs.length
-                                    : employeeProvider.employees.length,
+                                    ? jobProvider.filteredJobs.length
+                                    : employeeProvider.filteredEmployees.length,
                             (context, index) {
                               //   itemCount: _activeEntity == Entity.departments
                               //     ? departmentProvider.departments.length
@@ -382,11 +396,11 @@ class _CrudScreenState extends State<CrudScreen> {
     JobProvider jobProvider = context.read<JobProvider>();
     EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
     if (_activeEntity == Entity.departments) {
-      return departmentProvider.departments[index];
+      return departmentProvider.filteredDepartments[index];
     } else if (_activeEntity == Entity.jobs) {
-      return jobProvider.jobs[index];
+      return jobProvider.filteredJobs[index];
     } else {
-      return employeeProvider.employees[index];
+      return employeeProvider.filteredEmployees[index];
     }
   }
 
@@ -449,6 +463,26 @@ class _CrudScreenState extends State<CrudScreen> {
               height: 500.0,
               color: Colors.white,
               child: AddForm(
+                activeEntity: _activeEntity,
+              ),
+            ));
+      },
+    );
+  }
+
+  void showFilterDialog() {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            content: Container(
+              width: 500.0,
+              height: 500.0,
+              color: Colors.white,
+              child: FilterForm(
                 activeEntity: _activeEntity,
               ),
             ));

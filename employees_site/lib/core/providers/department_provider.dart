@@ -22,7 +22,7 @@ class DepartmentProvider extends ChangeNotifier {
     } catch (error) {
       print('Error in department_provder.getDepartments: $error');
     }
-
+    filteredDepartments = departments;
     setDepartments(departments);
     notifyListeners();
     return departments;
@@ -30,6 +30,20 @@ class DepartmentProvider extends ChangeNotifier {
 
   Department? getDepartmentById(int id) {
     return departmentsMap[id];
+  }
+
+  void filter(String? term) {
+    if (term == null || term.trim().isEmpty) {
+      filteredDepartments = departments;
+    } else {
+      filteredDepartments = [];
+      for (Department department in departments) {
+        if (department.hasFilter(term)) {
+          filteredDepartments.add(department);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   Future<Department?> getDepartmentByName(String departmentName) async {
