@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:employees_site/core/models/job_model.dart';
 import 'package:employees_site/core/services/jobs_service.dart';
@@ -43,6 +44,23 @@ class JobProvider extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  Future<bool> uploadJobs(Uint8List fileBytes) async {
+    bool res = await JobsService().uploadJobs(fileBytes);
+    if (res) {
+      getAllJobs();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteAllJobs() async {
+    bool res = await JobsService.deleteAllJobs();
+    if (res) {
+      getAllJobs();
+    }
+    return res;
   }
 
   void setJobs(List<Job> jobs) {

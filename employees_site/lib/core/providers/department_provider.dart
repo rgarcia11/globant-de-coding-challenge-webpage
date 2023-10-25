@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/services/departments_service.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/widgets.dart';
 class DepartmentProvider extends ChangeNotifier {
   Map<int, Department> departmentsMap = {};
   List<Department> departments = [];
+  List<Department> filteredDepartments = [];
 
   DepartmentProvider() {
     getAllDepartments();
@@ -44,6 +46,22 @@ class DepartmentProvider extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  Future<bool> uploadDepartments(Uint8List fileBytes) async {
+    bool res = await DepartmentsService().uploadDepartments(fileBytes);
+    if (res) {
+      getAllDepartments();
+    }
+    return res;
+  }
+
+  Future<bool> deleteAllDepartments() async {
+    bool res = await DepartmentsService.deleteAllDepartments();
+    if (res) {
+      getAllDepartments();
+    }
+    return res;
   }
 
   void setDepartments(List<Department> departments) {
