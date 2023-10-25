@@ -5,6 +5,7 @@ import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/core/services/departments_service.dart';
 import 'package:employees_site/core/services/employee_service.dart';
+import 'package:employees_site/ui/widgets/add_form.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
 import 'package:employees_site/ui/widgets/entity_card.dart';
 import 'package:file_picker/file_picker.dart';
@@ -109,10 +110,7 @@ class _CrudScreenState extends State<CrudScreen> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CrudScreen()));
+                                      showAddDialog();
                                     },
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black,
@@ -435,6 +433,26 @@ class _CrudScreenState extends State<CrudScreen> {
           decorationThickness: 2.0,
         ),
       ),
+    );
+  }
+
+  void showAddDialog() {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            content: Container(
+              width: 500.0,
+              height: 500.0,
+              color: Colors.white,
+              child: AddForm(
+                activeEntity: _activeEntity,
+              ),
+            ));
+      },
     );
   }
 

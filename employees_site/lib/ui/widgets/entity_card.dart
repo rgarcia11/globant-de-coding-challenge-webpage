@@ -15,6 +15,35 @@ class EntityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    JobProvider jobProvider = context.read<JobProvider>();
+    Widget? tag;
+    if (entity is Employee && employeeProvider.isANewHire(entity.id) ||
+        entity is Department &&
+            departmentProvider.isANewDepartment(entity.id) ||
+        entity is Job && jobProvider.isANewJob(entity.id)) {
+      tag = Positioned(
+        top: -5.0,
+        right: 15.0,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  spreadRadius: 1.0,
+                  blurRadius: 5.0,
+                  color: Colors.grey,
+                  offset: Offset(0, 5))
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.zero,
+          ),
+          child: const Text('NEW'),
+        ),
+      );
+    } else {
+      tag = Container();
+    }
     return Stack(
       children: [
         Container(
@@ -34,36 +63,22 @@ class EntityCard extends StatelessWidget {
                 ? employeeProvider.isANewHire(entity.id)
                     ? const Color(0xFFC0D731)
                     : Colors.white
-                : Colors.white,
+                : entity is Department
+                    ? departmentProvider.isANewDepartment(entity.id)
+                        ? const Color(0xFFC0D731)
+                        : Colors.white
+                    : entity is Job
+                        ? jobProvider.isANewJob(entity.id)
+                            ? const Color(0xFFC0D731)
+                            : Colors.white
+                        : Colors.white,
             borderRadius: BorderRadius.zero,
           ),
           child: Align(
               alignment: Alignment.bottomLeft,
               child: buildCardContent(context)),
         ),
-        entity is Employee
-            ? employeeProvider.isANewHire(entity.id)
-                ? Positioned(
-                    top: -5.0,
-                    right: 15.0,
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 1.0,
-                              blurRadius: 5.0,
-                              color: Colors.grey,
-                              offset: Offset(0, 5))
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      child: const Text('NEW'),
-                    ),
-                  )
-                : Container()
-            : Container(),
+        tag
       ],
     );
   }

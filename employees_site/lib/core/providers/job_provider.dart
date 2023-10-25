@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 class JobProvider extends ChangeNotifier {
   Map<int, Job> jobsMap = {};
   List<Job> jobs = [];
+  List<Job> newJobs = [];
 
   JobProvider() {
     getAllJobs();
@@ -36,14 +37,19 @@ class JobProvider extends ChangeNotifier {
         return job;
       }
     }
-    await JobsService.createJob(Job(job: jobName));
-    await getAllJobs();
-    for (Job job in jobs) {
-      if (job.job == jobName) {
-        return job;
-      }
-    }
-    return null;
+    Job newJob = await JobsService.createJob(Job(job: jobName));
+    jobs = [newJob, ...jobs];
+    newJobs.add(newJob);
+    setJobs([newJob]);
+    notifyListeners();
+    return newJob;
+    // await getAllJobs();
+    // for (Job job in jobs) {
+    //   if (job.job == jobName) {
+    //     return job;
+    //   }
+    // }
+    // return null;
   }
 
   Future<bool> uploadJobs(Uint8List fileBytes) async {
@@ -75,9 +81,25 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> createJob(Job newJob) async {
+    jobs = [newJob, ...jobs];
+    newJobs.add(newJob);
+    setJobs([newJob]);
+    notifyListeners();
+  }
+
+  bool isANewJob(int jobId) {
+    return newJobs.fold(false, (isANewJob, Job e) {
+      if (isANewJob || e.id == jobId) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   void deleteJob(int id) async {
-    Job employee = await JobsService().deleteJob(id);
-    jobs.removeWhere((element) => element.id == employee.id);
+    Job job = await JobsService().deleteJob(id);
+    jobs.removeWhere((element) => element.id == job.id);
     notifyListeners();
   }
 
