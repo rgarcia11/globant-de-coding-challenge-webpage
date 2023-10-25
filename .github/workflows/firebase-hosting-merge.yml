@@ -19,21 +19,17 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-      - name: Enter Project Root0
-        run: cd employees_site
-      - name: Enter Project Root
-        run: cd ./employees_site/
-      - name: Enter Project Root2
-        run: pwd
-      - name: Enter Project Root3
-        run: ls -la
       - name: Install Dependencies
+        working_directory: ./employees_site
         run: flutter pub get
       - name: Generator
+        working_directory: ./employees_site
         run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Build
+        working_directory: ./employees_site
         run: flutter build web --dart-define ENV=PROD
       - name: Upload Artifacts
+        working_directory: ./employees_site
         uses: actions/upload-artifact@v2
         with:
           name: flutter-build
