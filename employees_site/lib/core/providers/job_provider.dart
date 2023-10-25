@@ -9,6 +9,7 @@ class JobProvider extends ChangeNotifier {
   Map<int, Job> jobsMap = {};
   List<Job> jobs = [];
   List<Job> newJobs = [];
+  List<Job> filteredJobs = [];
 
   JobProvider() {
     getAllJobs();
@@ -21,7 +22,7 @@ class JobProvider extends ChangeNotifier {
     } catch (error) {
       print('Error in job_provder.getJobs: $error');
     }
-
+    filteredJobs = jobs;
     setJobs(jobs);
     notifyListeners();
     return jobs;
@@ -50,6 +51,20 @@ class JobProvider extends ChangeNotifier {
     //   }
     // }
     // return null;
+  }
+
+  void filter(String? term) {
+    if (term == null || term.trim().isEmpty) {
+      filteredJobs = jobs;
+    } else {
+      filteredJobs = [];
+      for (Job job in jobs) {
+        if (job.hasFilter(term)) {
+          filteredJobs.add(job);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   Future<bool> uploadJobs(Uint8List fileBytes) async {

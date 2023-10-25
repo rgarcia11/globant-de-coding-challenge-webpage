@@ -150,7 +150,7 @@ class EntityCard extends StatelessWidget {
               decoration: TextDecoration.underline,
               decorationThickness: 1.5),
         ),
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         InkWell(
           onTap: () {
             EmployeeProvider employeeProvider =

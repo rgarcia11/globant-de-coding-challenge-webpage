@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class ChatGPTService {
-  String _openAiKey = dotenv.env['OPENAI_API_KEY']!;
+  final String _openAiKey = dotenv.env['OPENAI_API_KEY']!;
 
-  RegExp _extractEmployeeJSONRegExp = RegExp(r'{(.*\n?)*}');
+  final RegExp _extractEmployeeJSONRegExp = RegExp(r'{(.*\n?)*}');
 
   Future<String?> hireEmployeeChatGPT(String prompt) async {
     String intro = '''Hi, dear ChatGPT. 
@@ -158,24 +158,9 @@ class ChatGPTService {
     }
     try {
       if (res.statusCode == 200) {
-        print('Gatito interno botate');
-        print(res.body);
-        print('');
-        print(jsonDecode(res.body));
-        print('');
-        print(jsonDecode(res.body)['choices']);
-        print('');
-        print(jsonDecode(res.body)['choices'][0]);
-        print('');
-        print(jsonDecode(res.body)['choices'][0]['message']);
-        print('');
-        print(jsonDecode(res.body)['choices'][0]['message']['content']);
         String content =
             jsonDecode(res.body)['choices'][0]['message']['content'];
         content = content.trim();
-        print(content);
-        print(_extractEmployeeJSONRegExp.firstMatch(content) ?? 'aiudax');
-        print(_extractEmployeeJSONRegExp.firstMatch(content)?.group(0));
         return _extractEmployeeJSONRegExp.firstMatch(content)?.group(0);
       }
       return 'An internal error occurred: $res, ${res.body}';

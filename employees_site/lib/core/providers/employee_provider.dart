@@ -9,6 +9,7 @@ class EmployeeProvider extends ChangeNotifier {
   Map<int, Employee> employeesMap = {};
   List<Employee> employees = [];
   List<Employee> hiredEmployees = [];
+  List<Employee> filteredEmployees = [];
 
   EmployeeProvider() {
     getAllEmployees();
@@ -22,6 +23,7 @@ class EmployeeProvider extends ChangeNotifier {
     } catch (error) {
       print('Error in employee_provder.getEmployees: $error');
     }
+    filteredEmployees = employees;
     sortEmployees();
     setEmployees(employees);
     notifyListeners();
@@ -54,6 +56,20 @@ class EmployeeProvider extends ChangeNotifier {
     hiredEmployees.add(newEmployee);
     notifyListeners();
     setEmployees([newEmployee]);
+  }
+
+  void filter(String? term) {
+    if (term == null || term.trim().isEmpty) {
+      filteredEmployees = employees;
+    } else {
+      filteredEmployees = [];
+      for (Employee employee in employees) {
+        if (employee.hasFilter(term)) {
+          filteredEmployees.add(employee);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   bool isANewHire(int employeeId) {

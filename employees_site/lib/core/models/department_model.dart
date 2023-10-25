@@ -11,4 +11,9 @@ class Department {
       Department(id: json['id'], department: json['department']);
 
   Map<String, dynamic> toJson() => {"department": department};
+
+  bool hasFilter(String term) {
+    return department.toLowerCase().contains(term.toLowerCase()) ||
+        '$id'.contains(term);
+  }
 }
