@@ -53,9 +53,10 @@ class EmployeeProvider extends ChangeNotifier {
 
   void hireEmployee(Employee newEmployee) {
     employees = [newEmployee, ...employees];
+    filteredEmployees = [newEmployee, ...filteredEmployees];
     hiredEmployees.add(newEmployee);
-    notifyListeners();
     setEmployees([newEmployee]);
+    notifyListeners();
   }
 
   void filter(String? term) {

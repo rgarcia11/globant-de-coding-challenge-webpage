@@ -40,6 +40,7 @@ class JobProvider extends ChangeNotifier {
     }
     Job newJob = await JobsService.createJob(Job(job: jobName));
     jobs = [newJob, ...jobs];
+    filteredJobs = [newJob, ...filteredJobs];
     newJobs.add(newJob);
     setJobs([newJob]);
     notifyListeners();
@@ -98,6 +99,7 @@ class JobProvider extends ChangeNotifier {
 
   Future<void> createJob(Job newJob) async {
     jobs = [newJob, ...jobs];
+    filteredJobs = [newJob, ...filteredJobs];
     newJobs.add(newJob);
     setJobs([newJob]);
     notifyListeners();

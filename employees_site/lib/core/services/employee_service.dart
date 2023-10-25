@@ -33,9 +33,10 @@ class EmployeesService {
   }
 
   Future<bool> uploadEmployees(Uint8List fileBytes) async {
+    print('gatuno1');
     FormData formData = FormData.fromMap(
       {
-        "csv_header_row": false,
+        "csv_header_row": true,
         "batch_size": 1000,
         "csv_file":
             MultipartFile.fromBytes(fileBytes, filename: "csv_file.csv"),
@@ -43,12 +44,16 @@ class EmployeesService {
     );
     dio.options.headers['content-Type'] = 'multipart/form-data';
 
+    print('gatuno2');
     Response res = await dio.post(
         '${ApiConfig.baseUrl}/${EmployeesService.service}s/upload',
         data: formData);
+    print('gatuno3');
     if (res.statusCode == 200) {
+      print('gatuno4');
       return true;
     } else {
+      print('gatuno5');
       return false;
     }
   }
