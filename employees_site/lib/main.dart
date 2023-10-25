@@ -20,6 +20,7 @@ void main() async {
       child: MaterialApp(
         title: 'Globant Challenge App',
         theme: ThemeData(
+          fontFamily: 'Araboto',
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),

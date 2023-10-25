@@ -21,20 +21,37 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: InkWell(
-        onTap: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const ChallengeLandingScreen(),
-            ),
-          );
-        },
-        child: const Text(
-          'Globant',
-          style: TextStyle(fontSize: 28.0),
+      centerTitle: false,
+      title: Transform.translate(
+        offset: Offset(140 - 15.0, 0.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const ChallengeLandingScreen(),
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              const Text(
+                'Globant',
+                style: TextStyle(
+                    fontSize: 28.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                  width: 27.0,
+                  height: 27.0,
+                  child: Image.asset(
+                    'assets/Logo.png',
+                    fit: BoxFit.contain,
+                  )),
+            ],
+          ),
         ),
       ), // Coolvetica font
-      centerTitle: false,
       actions: widget.landing
           ? [
               ElevatedButton(
@@ -59,8 +76,14 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
+              const SizedBox(width: 140.0 - 15.0),
             ]
-          : widget.actions ?? [],
+          : widget.actions != null
+              ? [
+                  ...widget.actions!,
+                  const SizedBox(width: 140.0 - 15.0),
+                ]
+              : null,
     );
   }
 }
