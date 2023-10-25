@@ -12,15 +12,14 @@ import 'package:employees_site/ui/screens/crud_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NewEmployeeForm extends StatefulWidget {
-  final bool landing;
-  const NewEmployeeForm({this.landing = false, super.key});
+class HireEmployeeForm extends StatefulWidget {
+  const HireEmployeeForm({super.key});
 
   @override
-  State<NewEmployeeForm> createState() => _NewEmployeeFormState();
+  State<HireEmployeeForm> createState() => _HireEmployeeFormState();
 }
 
-class _NewEmployeeFormState extends State<NewEmployeeForm> {
+class _HireEmployeeFormState extends State<HireEmployeeForm> {
   final TextEditingController _textFieldController = TextEditingController();
   bool _buttonHovered = false;
 
@@ -107,8 +106,8 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                       );
                     },
                   );
-                  String? answer =
-                      await newUserChatGPT(_textFieldController.text);
+                  String? answer = await ChatGPTService()
+                      .hireEmployeeChatGPT(_textFieldController.text);
                   if (answer == null) {
                     // TODO: Error message
                     Navigator.of(context).pop();

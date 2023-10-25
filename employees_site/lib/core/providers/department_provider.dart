@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 class DepartmentProvider extends ChangeNotifier {
   Map<int, Department> departmentsMap = {};
   List<Department> departments = [];
+  List<Department> newDepartments = [];
   List<Department> filteredDepartments = [];
 
   DepartmentProvider() {
@@ -37,15 +38,20 @@ class DepartmentProvider extends ChangeNotifier {
         return department;
       }
     }
-    await DepartmentsService.createDepartment(
+    Department newDepartment = await DepartmentsService.createDepartment(
         Department(department: departmentName));
-    await getAllDepartments();
-    for (Department department in departments) {
-      if (department.department == departmentName) {
-        return department;
-      }
-    }
-    return null;
+    departments = [newDepartment, ...departments];
+    newDepartments.add(newDepartment);
+    setDepartments([newDepartment]);
+    notifyListeners();
+    return newDepartment;
+    // await getAllDepartments();
+    // for (Department department in departments) {
+    //   if (department.department == departmentName) {
+    //     return department;
+    //   }
+    // }
+    // return null;
   }
 
   Future<bool> uploadDepartments(Uint8List fileBytes) async {
@@ -75,6 +81,22 @@ class DepartmentProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> createDepartment(Department newDepartment) async {
+    departments = [newDepartment, ...departments];
+    newDepartments.add(newDepartment);
+    setDepartments([newDepartment]);
+    notifyListeners();
+  }
+
+  bool isANewDepartment(int departmentId) {
+    return newDepartments.fold(false, (isANewDepartment, Department e) {
+      if (isANewDepartment || e.id == departmentId) {
+        return true;
+      }
+      return false;
+    });
   }
 
   void deleteDepartment(int id) async {
