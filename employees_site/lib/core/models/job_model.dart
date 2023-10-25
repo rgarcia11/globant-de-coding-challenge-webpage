@@ -11,4 +11,8 @@ class Job {
       Job(id: json['id'], job: json['job']);
 
   Map<String, dynamic> toJson() => {"job": job};
+  bool hasFilter(String term) {
+    return job.toLowerCase().contains(term.toLowerCase()) ||
+        '$id'.contains(term);
+  }
 }

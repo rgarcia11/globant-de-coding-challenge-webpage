@@ -21,9 +21,10 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      scrolledUnderElevation: 0.0,
       centerTitle: false,
       title: Transform.translate(
-        offset: Offset(140 - 15.0, 0.0),
+        offset: const Offset(140 - 15.0, 0.0),
         child: InkWell(
           onTap: () {
             Navigator.of(context).pushReplacement(
