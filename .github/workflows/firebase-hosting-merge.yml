@@ -1,10 +1,10 @@
 name: Globant DE Challenge Web Deploy
 
 on:
-  pull_request:
-    types: [edited]
   push:
-    branches: [main]
+  pull_request:
+    branches:
+      - main 
 
   workflow_dispatch:
 
