@@ -1,8 +1,10 @@
 name: Globant Challenge Web Deploy
 
-push:
-    branches:
-      - main
+on:
+  pull_request_review:
+    types: [edited]
+  push:
+    branches: [main]
 
   workflow_dispatch:
 
