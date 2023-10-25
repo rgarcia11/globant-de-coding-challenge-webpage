@@ -77,6 +77,12 @@ class DepartmentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteDepartment(int id) async {
+    Department department = await DepartmentsService().deleteDepartment(id);
+    departments.removeWhere((element) => element.id == department.id);
+    notifyListeners();
+  }
+
   void _terminate() async {
     departmentsMap = {};
   }

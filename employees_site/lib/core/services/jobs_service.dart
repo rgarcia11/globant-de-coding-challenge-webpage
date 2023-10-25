@@ -65,4 +65,14 @@ class JobsService {
         headers: ApiConfig.headers);
     return response.statusCode == 200;
   }
+
+  Future<Job> deleteJob(int id) async {
+    Response res = await dio.delete(
+        '${ApiConfig.baseUrl}/${JobsService.service}',
+        queryParameters: {"id": id});
+    if (res.statusCode == 200) {
+      return Job.fromJson(res.data);
+    }
+    throw Exception("This should never come here");
+  }
 }

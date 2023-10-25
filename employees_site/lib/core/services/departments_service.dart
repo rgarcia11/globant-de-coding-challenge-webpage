@@ -85,4 +85,14 @@ class DepartmentsService {
         headers: ApiConfig.headers);
     return response.statusCode == 200;
   }
+
+  Future<Department> deleteDepartment(int id) async {
+    Response res = await dio.delete(
+        '${ApiConfig.baseUrl}/${DepartmentsService.service}',
+        queryParameters: {"id": id});
+    if (res.statusCode == 200) {
+      return Department.fromJson(res.data);
+    }
+    throw Exception("This should never come here");
+  }
 }

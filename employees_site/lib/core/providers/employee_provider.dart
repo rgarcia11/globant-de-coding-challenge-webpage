@@ -87,6 +87,12 @@ class EmployeeProvider extends ChangeNotifier {
     );
   }
 
+  void deleteEmployee(int id) async {
+    Employee employee = await EmployeesService().deleteEmployee(id);
+    employees.removeWhere((element) => element.id == employee.id);
+    notifyListeners();
+  }
+
   void _terminate() async {
     employeesMap = {};
   }

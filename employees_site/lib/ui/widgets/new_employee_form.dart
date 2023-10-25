@@ -88,7 +88,6 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: () async {
-                  print('before dialog)');
                   showDialog(
                     barrierDismissible: false,
                     context: context,

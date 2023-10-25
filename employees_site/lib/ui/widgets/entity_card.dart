@@ -1,3 +1,4 @@
+import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/models/job_model.dart';
 import 'package:employees_site/core/providers/department_provider.dart';
@@ -36,8 +37,9 @@ class EntityCard extends StatelessWidget {
                 : Colors.white,
             borderRadius: BorderRadius.zero,
           ),
-          child:
-              Align(alignment: Alignment.bottomLeft, child: buildCardContent()),
+          child: Align(
+              alignment: Alignment.bottomLeft,
+              child: buildCardContent(context)),
         ),
         entity is Employee
             ? employeeProvider.isANewHire(entity.id)
@@ -66,7 +68,7 @@ class EntityCard extends StatelessWidget {
     );
   }
 
-  Widget buildCardContent() {
+  Widget buildCardContent(BuildContext context) {
     List<Widget> columnContent = [];
     if (entity is Employee) {
       columnContent.addAll(
@@ -136,12 +138,24 @@ class EntityCard extends StatelessWidget {
         SizedBox(height: 5.0),
         InkWell(
           onTap: () {
-            // TODO: Enter edit form
+            EmployeeProvider employeeProvider =
+                context.read<EmployeeProvider>();
+            DepartmentProvider departmentProvider =
+                context.read<DepartmentProvider>();
+            JobProvider jobProvider = context.read<JobProvider>();
+
+            if (entity is Employee) {
+              employeeProvider.deleteEmployee(entity.id);
+            } else if (entity is Department) {
+              departmentProvider.deleteDepartment(entity.id);
+            } else if (entity is Job) {
+              jobProvider.deleteJob(entity.id);
+            }
           },
           child: const Row(
             children: [
               Text(
-                'See details',
+                'Remove',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -150,7 +164,7 @@ class EntityCard extends StatelessWidget {
               ),
               SizedBox(width: 5.0),
               Icon(
-                Icons.arrow_forward,
+                Icons.close,
                 color: Colors.black,
               ),
             ],

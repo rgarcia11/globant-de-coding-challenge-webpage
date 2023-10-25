@@ -75,6 +75,12 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteJob(int id) async {
+    Job employee = await JobsService().deleteJob(id);
+    jobs.removeWhere((element) => element.id == employee.id);
+    notifyListeners();
+  }
+
   void _terminate() async {
     jobsMap = {};
   }
