@@ -55,6 +55,7 @@ class DepartmentProvider extends ChangeNotifier {
     Department newDepartment = await DepartmentsService.createDepartment(
         Department(department: departmentName));
     departments = [newDepartment, ...departments];
+    filteredDepartments = [newDepartment, ...filteredDepartments];
     newDepartments.add(newDepartment);
     setDepartments([newDepartment]);
     notifyListeners();
@@ -99,6 +100,7 @@ class DepartmentProvider extends ChangeNotifier {
 
   Future<void> createDepartment(Department newDepartment) async {
     departments = [newDepartment, ...departments];
+    filteredDepartments = [newDepartment, ...filteredDepartments];
     newDepartments.add(newDepartment);
     setDepartments([newDepartment]);
     notifyListeners();

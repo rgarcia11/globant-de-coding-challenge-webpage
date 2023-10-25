@@ -301,11 +301,11 @@ class _CrudScreenState extends State<CrudScreen> {
                                           departmentProvider
                                               .uploadDepartments(fileBytes!);
                                         } else if (_activeEntity ==
-                                            Entity.departments) {
+                                            Entity.employees) {
                                           employeeProvider
                                               .uploadEmployees(fileBytes!);
                                         } else if (_activeEntity ==
-                                            Entity.departments) {
+                                            Entity.jobs) {
                                           jobProvider.uploadJobs(fileBytes!);
                                         }
                                       }
