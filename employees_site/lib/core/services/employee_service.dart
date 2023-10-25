@@ -1,17 +1,61 @@
 // ignore_for_file: unnecessary_string_interpolations
 
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class EmployeesService {
   static String service = 'employee';
+  final dio = Dio();
 
-  Future<http.Response> uploadEmployees() {
-    // TODO: csv file
-    return http.post(Uri.parse('${ApiConfig.baseUrl}/${service}s/upload'));
+  Future<List> employeesHiredByQuarter(String year) async {
+    Response res = await dio.get(
+        '${ApiConfig.baseUrl}/${EmployeesService.service}s/hired_by_quarter',
+        queryParameters: {"year": year});
+    try {
+      final data = jsonDecode(res.data);
+      List responseTable = [];
+      for (dynamic row in data) {
+        List responseRow = [];
+        for (dynamic column in row) {
+          responseRow.add(column);
+        }
+        responseTable.add(responseRow);
+      }
+      return responseTable;
+    } on Exception {
+      return [];
+    }
+  }
+
+  Future<bool> uploadEmployees(Uint8List fileBytes) async {
+    print('gatuno1');
+    FormData formData = FormData.fromMap(
+      {
+        "csv_header_row": true,
+        "batch_size": 1000,
+        "csv_file":
+            MultipartFile.fromBytes(fileBytes, filename: "csv_file.csv"),
+      },
+    );
+    dio.options.headers['content-Type'] = 'multipart/form-data';
+
+    print('gatuno2');
+    Response res = await dio.post(
+        '${ApiConfig.baseUrl}/${EmployeesService.service}s/upload',
+        data: formData);
+    print('gatuno3');
+    if (res.statusCode == 200) {
+      print('gatuno4');
+      return true;
+    } else {
+      print('gatuno5');
+      return false;
+    }
   }
 
   static Future<List<Employee>> getAllEmployees() async {
@@ -38,5 +82,22 @@ class EmployeesService {
 
     final res = Employee.fromJson(jsonDecode(response.body));
     return res;
+  }
+
+  static Future<bool> deleteAllEmployees() async {
+    final response = await http.delete(
+        Uri.parse('${ApiConfig.baseUrl}/${EmployeesService.service}s'),
+        headers: ApiConfig.headers);
+    return response.statusCode == 200;
+  }
+
+  Future<Employee> deleteEmployee(int id) async {
+    Response res = await dio.delete(
+        '${ApiConfig.baseUrl}/${EmployeesService.service}',
+        queryParameters: {"id": id});
+    if (res.statusCode == 200) {
+      return Employee.fromJson(res.data);
+    }
+    throw Exception("This should never come here");
   }
 }

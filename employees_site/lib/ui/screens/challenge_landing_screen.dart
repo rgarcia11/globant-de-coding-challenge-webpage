@@ -2,7 +2,7 @@ import 'package:employees_site/core/providers/department_provider.dart';
 import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/ui/widgets/challenge_app_bar.dart';
-import 'package:employees_site/ui/widgets/new_employee_form.dart';
+import 'package:employees_site/ui/widgets/hire_employee_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,7 +82,7 @@ class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
                         ]),
                   ),
                 ), // Araboto font
-                NewEmployeeForm(landing: true),
+                HireEmployeeForm(),
               ],
             ),
           ),

@@ -31,4 +31,11 @@ class Employee {
         "job_id": jobId,
         "department_id": departmentId
       };
+
+  bool hasFilter(String term) {
+    return name.toLowerCase().contains(term.toLowerCase()) ||
+        '$departmentId'.contains(term) ||
+        '$jobId'.contains(term) ||
+        '$id'.contains(term);
+  }
 }

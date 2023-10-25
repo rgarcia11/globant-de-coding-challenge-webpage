@@ -1,3 +1,4 @@
+import 'package:employees_site/core/models/department_model.dart';
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/models/job_model.dart';
 import 'package:employees_site/core/providers/department_provider.dart';
@@ -5,6 +6,7 @@ import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class EntityCard extends StatelessWidget {
   final dynamic entity;
@@ -13,6 +15,35 @@ class EntityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    JobProvider jobProvider = context.read<JobProvider>();
+    Widget? tag;
+    if (entity is Employee && employeeProvider.isANewHire(entity.id) ||
+        entity is Department &&
+            departmentProvider.isANewDepartment(entity.id) ||
+        entity is Job && jobProvider.isANewJob(entity.id)) {
+      tag = Positioned(
+        top: -5.0,
+        right: 15.0,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  spreadRadius: 1.0,
+                  blurRadius: 5.0,
+                  color: Colors.grey,
+                  offset: Offset(0, 5))
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.zero,
+          ),
+          child: const Text('NEW'),
+        ),
+      );
+    } else {
+      tag = Container();
+    }
     return Stack(
       children: [
         Container(
@@ -32,44 +63,27 @@ class EntityCard extends StatelessWidget {
                 ? employeeProvider.isANewHire(entity.id)
                     ? const Color(0xFFC0D731)
                     : Colors.white
-                : Colors.white,
+                : entity is Department
+                    ? departmentProvider.isANewDepartment(entity.id)
+                        ? const Color(0xFFC0D731)
+                        : Colors.white
+                    : entity is Job
+                        ? jobProvider.isANewJob(entity.id)
+                            ? const Color(0xFFC0D731)
+                            : Colors.white
+                        : Colors.white,
             borderRadius: BorderRadius.zero,
           ),
-          child:
-              Align(alignment: Alignment.bottomLeft, child: buildCardContent()),
+          child: Align(
+              alignment: Alignment.bottomLeft,
+              child: buildCardContent(context)),
         ),
-        entity is Employee
-            ? employeeProvider.isANewHire(entity.id)
-                ? Positioned(
-                    top: -5.0,
-                    right: 15.0,
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                              spreadRadius: 1.0,
-                              blurRadius: 5.0,
-                              color: Colors.grey,
-                              offset: Offset(0, 5))
-                        ],
-                        color: entity is Employee
-                            ? employeeProvider.isANewHire(entity.id)
-                                ? const Color(0xFFC0D731)
-                                : Colors.white
-                            : Colors.white,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      child: const Text('NEW'),
-                    ),
-                  )
-                : Container()
-            : Container(),
+        tag
       ],
     );
   }
 
-  Widget buildCardContent() {
+  Widget buildCardContent(BuildContext context) {
     List<Widget> columnContent = [];
     if (entity is Employee) {
       columnContent.addAll(
@@ -87,10 +101,10 @@ class EntityCard extends StatelessWidget {
               const SizedBox(width: 5.0),
               Consumer<DepartmentProvider>(
                 builder: (context, departmentProvider, child) {
-                  String departmentName = departmentProvider
-                      .getDepartmentById(entity.departmentId)!
-                      .department;
-                  return Text(departmentName);
+                  String? departmentName = departmentProvider
+                      .getDepartmentById(entity.departmentId)
+                      ?.department;
+                  return Text(departmentName ?? '${entity.departmentId}');
                 },
               )
             ],
@@ -101,13 +115,13 @@ class EntityCard extends StatelessWidget {
               const SizedBox(width: 5.0),
               Consumer<JobProvider>(
                 builder: (context, jobProvider, child) {
-                  String jobName = jobProvider.getJobById(entity.jobId)!.job;
-                  return Text(jobName);
+                  String? jobName = jobProvider.getJobById(entity.jobId)?.job;
+                  return Text(jobName ?? '${entity.jobId}');
                 },
               )
             ],
           ),
-          Text('Since ${entity.datetime}'),
+          Text('Since ${DateFormat('yyyy-MM-dd').format(entity.datetime)}'),
         ],
       );
     } else {
@@ -136,20 +150,27 @@ class EntityCard extends StatelessWidget {
               decoration: TextDecoration.underline,
               decorationThickness: 1.5),
         ),
-        TextButton(
-          onPressed: () {
-            // TODO: Enter edit form
+        const SizedBox(height: 5.0),
+        InkWell(
+          onTap: () {
+            EmployeeProvider employeeProvider =
+                context.read<EmployeeProvider>();
+            DepartmentProvider departmentProvider =
+                context.read<DepartmentProvider>();
+            JobProvider jobProvider = context.read<JobProvider>();
+
+            if (entity is Employee) {
+              employeeProvider.deleteEmployee(entity.id);
+            } else if (entity is Department) {
+              departmentProvider.deleteDepartment(entity.id);
+            } else if (entity is Job) {
+              jobProvider.deleteJob(entity.id);
+            }
           },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.all(0.0),
-            shadowColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.transparent,
-          ),
           child: const Row(
             children: [
               Text(
-                'See details',
+                'Remove',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -158,7 +179,7 @@ class EntityCard extends StatelessWidget {
               ),
               SizedBox(width: 5.0),
               Icon(
-                Icons.arrow_forward,
+                Icons.close,
                 color: Colors.black,
               ),
             ],

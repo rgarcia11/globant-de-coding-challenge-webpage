@@ -7,20 +7,22 @@ import 'package:employees_site/core/providers/department_provider.dart';
 import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:employees_site/core/services/chatgpt_service.dart';
+import 'package:employees_site/core/services/departments_service.dart';
 import 'package:employees_site/core/services/employee_service.dart';
+import 'package:employees_site/core/services/jobs_service.dart';
 import 'package:employees_site/ui/screens/crud_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NewEmployeeForm extends StatefulWidget {
-  final bool landing;
-  const NewEmployeeForm({this.landing = false, super.key});
+class AddForm extends StatefulWidget {
+  final Entity activeEntity;
+  const AddForm({required this.activeEntity, super.key});
 
   @override
-  State<NewEmployeeForm> createState() => _NewEmployeeFormState();
+  State<AddForm> createState() => _AddFormState();
 }
 
-class _NewEmployeeFormState extends State<NewEmployeeForm> {
+class _AddFormState extends State<AddForm> {
   final TextEditingController _textFieldController = TextEditingController();
   bool _buttonHovered = false;
 
@@ -37,35 +39,7 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text.rich(
-                TextSpan(
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  children: [
-                    TextSpan(
-                      text:
-                          'Tell us your name and your dream job. Include which one of our departments you want',
-                      style: TextStyle(
-                        shadows: [
-                          Shadow(color: Colors.black, offset: Offset(0, -5.0))
-                        ],
-                        color: Colors.transparent,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' to be a part of',
-                      style: TextStyle(
-                        shadows: [
-                          Shadow(color: Colors.black, offset: Offset(0, -5.0))
-                        ],
-                        color: Colors.transparent,
-                        decoration: TextDecoration.underline,
-                        decorationColor: Color(0xFFa0f4a4),
-                        decorationThickness: 3.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const Text('Enter info'),
               const SizedBox(height: 18.0),
               TextField(
                 controller: _textFieldController,
@@ -88,7 +62,6 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: () async {
-                  print('before dialog)');
                   showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -108,33 +81,58 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                       );
                     },
                   );
-                  String? answer =
-                      await newUserChatGPT(_textFieldController.text);
-                  if (answer == null) {
-                    // TODO: Error message
-                    Navigator.of(context).pop();
-                  } else {
-                    if (context.mounted) {
-                      Map<String, dynamic> newEmployee = jsonDecode(answer);
-                      DepartmentProvider departmentProvider =
-                          context.read<DepartmentProvider>();
-                      JobProvider jobProvider = context.read<JobProvider>();
-                      EmployeeProvider employeeProvider =
-                          context.read<EmployeeProvider>();
-                      Job? job =
-                          await jobProvider.getJobByName(newEmployee['job']);
-                      Department? department = await departmentProvider
-                          .getDepartmentByName(newEmployee['department']);
-                      newEmployee.addAll(
-                          {"department_id": department!.id, "job_id": job!.id});
-                      newEmployee.remove('department');
-                      newEmployee.remove('job');
-                      Employee createdEmployee =
-                          await EmployeesService.createEmployee(
-                              Employee.fromJson(newEmployee));
-                      employeeProvider.hireEmployee(createdEmployee);
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CrudScreen()));
+                  String? answer;
+                  if (context.mounted) {
+                    ChatGPTService chatGPTService = ChatGPTService();
+                    if (widget.activeEntity == Entity.employees) {
+                      answer = await chatGPTService
+                          .addEmployeeChatGPT(_textFieldController.text);
+                    } else if (widget.activeEntity == Entity.departments) {
+                      answer = await chatGPTService
+                          .addDepartmentChatGPT(_textFieldController.text);
+                    } else if (widget.activeEntity == Entity.jobs) {
+                      answer = await chatGPTService
+                          .addJobChatGPT(_textFieldController.text);
+                    }
+
+                    DepartmentProvider departmentProvider =
+                        context.read<DepartmentProvider>();
+                    EmployeeProvider employeeProvider =
+                        context.read<EmployeeProvider>();
+                    JobProvider jobProvider = context.read<JobProvider>();
+                    if (answer == null) {
+                      Navigator.of(context).pop();
+                    } else {
+                      if (widget.activeEntity == Entity.employees) {
+                        Map<String, dynamic> newEmployee = jsonDecode(answer);
+                        Job? job =
+                            await jobProvider.getJobByName(newEmployee['job']);
+                        Department? department = await departmentProvider
+                            .getDepartmentByName(newEmployee['department']);
+                        newEmployee.addAll({
+                          "department_id": department!.id,
+                          "job_id": job!.id
+                        });
+                        newEmployee.remove('department');
+                        newEmployee.remove('job');
+                        Employee createdEmployee =
+                            await EmployeesService.createEmployee(
+                                Employee.fromJson(newEmployee));
+                        employeeProvider.hireEmployee(createdEmployee);
+                      } else if (widget.activeEntity == Entity.departments) {
+                        Map<String, dynamic> newDepartment = jsonDecode(answer);
+                        Department createdDepartment =
+                            await DepartmentsService.createDepartment(
+                                Department.fromJson(newDepartment));
+                        departmentProvider.createDepartment(createdDepartment);
+                      } else if (widget.activeEntity == Entity.jobs) {
+                        Map<String, dynamic> newJob = jsonDecode(answer);
+                        Job createdJob =
+                            await JobsService.createJob(Job.fromJson(newJob));
+                        jobProvider.createJob(createdJob);
+                      }
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     }
                   }
                 },
@@ -150,7 +148,7 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                       : const Color(0xFFC0D731),
                 ),
                 child: const Text(
-                  'START REINVENTING',
+                  'Add',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),

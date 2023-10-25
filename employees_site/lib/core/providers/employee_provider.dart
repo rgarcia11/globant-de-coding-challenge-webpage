@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:employees_site/core/models/employee_model.dart';
 import 'package:employees_site/core/services/employee_service.dart';
@@ -8,6 +9,7 @@ class EmployeeProvider extends ChangeNotifier {
   Map<int, Employee> employeesMap = {};
   List<Employee> employees = [];
   List<Employee> hiredEmployees = [];
+  List<Employee> filteredEmployees = [];
 
   EmployeeProvider() {
     getAllEmployees();
@@ -21,6 +23,7 @@ class EmployeeProvider extends ChangeNotifier {
     } catch (error) {
       print('Error in employee_provder.getEmployees: $error');
     }
+    filteredEmployees = employees;
     sortEmployees();
     setEmployees(employees);
     notifyListeners();
@@ -31,11 +34,43 @@ class EmployeeProvider extends ChangeNotifier {
     return employeesMap[id];
   }
 
+  Future<bool> uploadEmployees(Uint8List fileBytes) async {
+    bool res = await EmployeesService().uploadEmployees(fileBytes);
+    if (res) {
+      getAllEmployees();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteAllEmployees() async {
+    bool res = await EmployeesService.deleteAllEmployees();
+    if (res) {
+      getAllEmployees();
+    }
+    return res;
+  }
+
   void hireEmployee(Employee newEmployee) {
     employees = [newEmployee, ...employees];
+    filteredEmployees = [newEmployee, ...filteredEmployees];
     hiredEmployees.add(newEmployee);
-    notifyListeners();
     setEmployees([newEmployee]);
+    notifyListeners();
+  }
+
+  void filter(String? term) {
+    if (term == null || term.trim().isEmpty) {
+      filteredEmployees = employees;
+    } else {
+      filteredEmployees = [];
+      for (Employee employee in employees) {
+        if (employee.hasFilter(term)) {
+          filteredEmployees.add(employee);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   bool isANewHire(int employeeId) {
@@ -67,6 +102,12 @@ class EmployeeProvider extends ChangeNotifier {
         return bdate.compareTo(adate);
       },
     );
+  }
+
+  void deleteEmployee(int id) async {
+    Employee employee = await EmployeesService().deleteEmployee(id);
+    employees.removeWhere((element) => element.id == employee.id);
+    notifyListeners();
   }
 
   void _terminate() async {
