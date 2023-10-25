@@ -5,6 +5,7 @@ import 'package:employees_site/core/providers/employee_provider.dart';
 import 'package:employees_site/core/providers/job_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class EntityCard extends StatelessWidget {
   final dynamic entity;
@@ -83,10 +84,10 @@ class EntityCard extends StatelessWidget {
               const SizedBox(width: 5.0),
               Consumer<DepartmentProvider>(
                 builder: (context, departmentProvider, child) {
-                  String departmentName = departmentProvider
-                      .getDepartmentById(entity.departmentId)!
-                      .department;
-                  return Text(departmentName);
+                  String? departmentName = departmentProvider
+                      .getDepartmentById(entity.departmentId)
+                      ?.department;
+                  return Text(departmentName ?? '${entity.departmentId}');
                 },
               )
             ],
@@ -97,13 +98,13 @@ class EntityCard extends StatelessWidget {
               const SizedBox(width: 5.0),
               Consumer<JobProvider>(
                 builder: (context, jobProvider, child) {
-                  String jobName = jobProvider.getJobById(entity.jobId)!.job;
-                  return Text(jobName);
+                  String? jobName = jobProvider.getJobById(entity.jobId)?.job;
+                  return Text(jobName ?? '${entity.jobId}');
                 },
               )
             ],
           ),
-          Text('Since ${entity.datetime}'),
+          Text('Since ${DateFormat('yyyy-MM-dd').format(entity.datetime)}'),
         ],
       );
     } else {
@@ -132,16 +133,11 @@ class EntityCard extends StatelessWidget {
               decoration: TextDecoration.underline,
               decorationThickness: 1.5),
         ),
-        TextButton(
-          onPressed: () {
+        SizedBox(height: 5.0),
+        InkWell(
+          onTap: () {
             // TODO: Enter edit form
           },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.all(0.0),
-            shadowColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.transparent,
-          ),
           child: const Row(
             children: [
               Text(
