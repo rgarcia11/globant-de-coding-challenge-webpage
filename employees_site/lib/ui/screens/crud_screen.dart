@@ -87,7 +87,8 @@ class _CrudScreenState extends State<CrudScreen> {
                       sliver: SliverToBoxAdapter(
                         child: Text(
                           '${_activeEntity.name.capitalize()}',
-                          style: const TextStyle(fontSize: 34.0),
+                          style: const TextStyle(
+                              fontSize: 34.0, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
