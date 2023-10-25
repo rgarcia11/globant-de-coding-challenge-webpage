@@ -45,19 +45,15 @@ class EntityCard extends StatelessWidget {
                     right: 15.0,
                     child: Container(
                       padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        boxShadow: const [
+                      decoration: const BoxDecoration(
+                        boxShadow: [
                           BoxShadow(
                               spreadRadius: 1.0,
                               blurRadius: 5.0,
                               color: Colors.grey,
                               offset: Offset(0, 5))
                         ],
-                        color: entity is Employee
-                            ? employeeProvider.isANewHire(entity.id)
-                                ? const Color(0xFFC0D731)
-                                : Colors.white
-                            : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.zero,
                       ),
                       child: const Text('NEW'),
