@@ -22,12 +22,9 @@ jobs:
       - name: Install Dependencies
         working-directory: ./employees_site
         run: flutter pub get
-      - name: Generator
-        working-directory: ./employees_site
-        run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Build
         working-directory: ./employees_site
-        run: flutter build web --dart-define ENV=PROD
+        run: flutter build web
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
