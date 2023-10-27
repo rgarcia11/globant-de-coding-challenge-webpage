@@ -58,7 +58,9 @@ jobs:
         run: |
           touch sa.json
           echo ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GLOBANT_CHALLENGE_WEB }} | base64 -d > sa.json
-          echo pwd
+          pwd | cat
+          ls | cat
           export GOOGLE_APPLICATION_CREDENTIALS='sa.json'
+          cat $GOOGLE_APLICATION_CREDENTIALS
       - name: Deploy
         run: firebase deploy
