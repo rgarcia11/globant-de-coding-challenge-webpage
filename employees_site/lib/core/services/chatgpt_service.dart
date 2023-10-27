@@ -3,12 +3,14 @@
 import 'dart:convert';
 
 import 'package:employees_site/core/services/api_config.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class ChatGPTService {
-  final String _openAiKey = dotenv.env['OPENAI_API_KEY']!;
+  // final String _openAiKey = dotenv.env['OPENAI_API_KEY']!;
+  final String _openAiKey =
+      "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";
 
   final RegExp _extractEmployeeJSONRegExp = RegExp(r'{(.*\n?)*}');
 
