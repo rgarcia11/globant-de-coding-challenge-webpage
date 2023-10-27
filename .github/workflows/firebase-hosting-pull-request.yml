@@ -61,6 +61,6 @@ jobs:
           pwd | cat
           ls | cat
           export GOOGLE_APPLICATION_CREDENTIALS='/home/runner/work/globant-de-coding-challenge-webpage/globant-de-coding-challenge-webpage/sa.json'
-          cat $GOOGLE_APLICATION_CREDENTIALS
+          echo "$GOOGLE_APLICATION_CREDENTIALS"
       - name: Deploy
         run: firebase deploy
