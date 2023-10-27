@@ -56,7 +56,7 @@ jobs:
         with:
           node-version: "16"
       - name: Deploy
-        uses: FirebaseExtended/action-hosting-deploy@
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GLOBANT_CHALLENGE_WEB }}'
