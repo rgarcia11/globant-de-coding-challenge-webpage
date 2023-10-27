@@ -29,7 +29,6 @@ jobs:
         working-directory: ./employees_site
         run: flutter build web --dart-define ENV=PROD
       - name: Upload Artifacts
-        working-directory: ./employees_site
         uses: actions/upload-artifact@v2
         with:
           name: flutter-build
