@@ -33,8 +33,30 @@ jobs:
       - name: Build
         working-directory: ./employees_site
         run: flutter build web
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: flutter-build
+          path: ./employees_site/build/web
+
+deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: flutter-build
+          path: build/web
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - name: Deploy
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GLOBANT_CHALLENGE_WEB }}'
