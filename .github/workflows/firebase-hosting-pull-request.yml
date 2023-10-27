@@ -24,9 +24,9 @@ jobs:
         run: flutter pub get
       - name: 'Create env file'
         run: |
-          touch .env
+          touch ./employees_site/.env
           echo OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} >> ./employees_site/.env
-          cat .env
+          cat ./employees_site/.env
       - name: Build
         working-directory: ./employees_site
         run: flutter build web
