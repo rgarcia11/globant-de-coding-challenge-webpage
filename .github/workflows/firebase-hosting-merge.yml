@@ -20,16 +20,16 @@ jobs:
         with:
           channel: "stable"
       - name: Install Dependencies
-        working-_directory: ./employees_site
+        working-directory: ./employees_site
         run: flutter pub get
       - name: Generator
-        working-_directory: ./employees_site
+        working-directory: ./employees_site
         run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Build
-        working-_directory: ./employees_site
+        working-directory: ./employees_site
         run: flutter build web --dart-define ENV=PROD
       - name: Upload Artifacts
-        working-_directory: ./employees_site
+        working-directory: ./employees_site
         uses: actions/upload-artifact@v2
         with:
           name: flutter-build
