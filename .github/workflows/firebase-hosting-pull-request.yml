@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: flutter-build
-          path: build/web
+          path: ./employees_site/build/web
 
   deploy:
     name: Deploy
