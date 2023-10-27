@@ -39,7 +39,7 @@ jobs:
           name: flutter-build
           path: ./employees_site/build/web
 
-deploy:
+  deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
