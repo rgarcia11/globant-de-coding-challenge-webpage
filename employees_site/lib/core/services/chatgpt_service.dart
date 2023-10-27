@@ -1,5 +1,3 @@
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
-// dotenv.env['VAR_NAME'];
 import 'dart:convert';
 
 import 'package:employees_site/core/services/api_config.dart';
