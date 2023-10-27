@@ -60,7 +60,7 @@ jobs:
           echo ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GLOBANT_CHALLENGE_WEB }} | base64 -d > sa.json
           pwd | cat
           ls | cat
-          export GOOGLE_APPLICATION_CREDENTIALS='sa.json'
+          export GOOGLE_APPLICATION_CREDENTIALS='/home/runner/work/globant-de-coding-challenge-webpage/globant-de-coding-challenge-webpage/sa.json'
           cat $GOOGLE_APLICATION_CREDENTIALS
       - name: Deploy
         run: firebase deploy
