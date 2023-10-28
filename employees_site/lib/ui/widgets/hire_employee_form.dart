@@ -25,9 +25,10 @@ class _HireEmployeeFormState extends State<HireEmployeeForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    double width = MediaQuery.of(context).size.width;
+    return SizedBox(
       width: 570.0,
-      height: 420,
+      height: width > 1250 ? 420 : null,
       child: Card(
         color: Colors.white,
         surfaceTintColor: Colors.white,

@@ -28,7 +28,7 @@ class _AddFormState extends State<AddForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 570.0,
       height: 420,
       child: Card(

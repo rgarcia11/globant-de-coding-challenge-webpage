@@ -54,18 +54,16 @@ class _CrudScreenState extends State<CrudScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width - pagePadding * 2;
-    double nonEmployeeAspectRatio = height < 750
-        ? width / (height / 1.4)
-        : height < 820
-            ? width / (height / 1.6)
-            : width / (height / 1.8);
-    double employeeAspectRatio = height < 760
-        ? width / (height / 0.90)
-        : height < 850
-            ? width / (height / 1.1)
-            : width / (height / 1.25);
+    double width = MediaQuery.of(context).size.width;
+    double padding;
+    if (width > 1250) {
+      padding = 140.0;
+    } else if (width > 670) {
+      padding = 100;
+    } else {
+      padding = 10.0;
+    }
+
     return Scaffold(
       appBar: ChallengeAppBar(
         actions: [
@@ -92,7 +90,7 @@ class _CrudScreenState extends State<CrudScreen> {
                         child: SizedBox(height: 50.0),
                       ),
                       SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: pagePadding),
+                        padding: EdgeInsets.symmetric(horizontal: padding),
                         sliver: SliverToBoxAdapter(
                           child: Text(
                             '${_activeEntity.name.capitalize()}',
@@ -104,254 +102,25 @@ class _CrudScreenState extends State<CrudScreen> {
                       const SliverToBoxAdapter(
                         child: SizedBox(height: 50.0),
                       ),
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: pagePadding),
-                        sliver: SliverToBoxAdapter(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      showFilterDialog();
-                                    },
-                                    onHover: (value) {
-                                      setState(() {
-                                        _filterHovered = value;
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.black,
-                                      backgroundColor: const Color(0xFFE0E0E0),
-                                    ),
-                                    child: Text(
-                                      'Filter',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: _filterHovered
-                                              ? TextDecoration.underline
-                                              : null,
-                                          decorationThickness: 2.0),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20.0),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      showAddDialog();
-                                    },
-                                    onHover: (value) {
-                                      setState(() {
-                                        _addHovered = value;
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.black,
-                                      backgroundColor: const Color(0xFFE0E0E0),
-                                    ),
-                                    child: Text(
-                                      'Add ${_activeEntity.name}'.trimLast(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: _addHovered
-                                              ? TextDecoration.underline
-                                              : null,
-                                          decorationThickness: 2.0),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20.0),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      if (_activeEntity == Entity.employees) {
-                                        employeeProvider.deleteAllEmployees();
-                                      } else if (_activeEntity ==
-                                          Entity.departments) {
-                                        departmentProvider
-                                            .deleteAllDepartments();
-                                      } else if (_activeEntity == Entity.jobs) {
-                                        jobProvider.deleteAllJobs();
-                                      }
-                                    },
-                                    onHover: (value) {
-                                      setState(() {
-                                        _deleteHovered = value;
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.black,
-                                      backgroundColor: const Color(0xFFE0E0E0),
-                                    ),
-                                    child: Text(
-                                      'Delete all ${_activeEntity.name}s'
-                                          .trimLast(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: _deleteHovered
-                                              ? TextDecoration.underline
-                                              : null,
-                                          decorationThickness: 2.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  _activeEntity == Entity.employees
-                                      ? ElevatedButton(
-                                          onPressed: () async {
-                                            List employeesHiredByQuarter =
-                                                await EmployeesService()
-                                                    .employeesHiredByQuarter(
-                                                        "2021");
-                                            if (employeesHiredByQuarter
-                                                .isNotEmpty) {
-                                              showResultDialog(
-                                                  employeesHiredByQuarter);
-                                            }
-                                          },
-                                          onHover: (value) {
-                                            setState(() {
-                                              _employeesHiredHovered = value;
-                                            });
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor:
-                                                const Color(0xFFC0D731),
-                                            backgroundColor:
-                                                _employeesHiredHovered
-                                                    ? const Color(0xFFC0D731)
-                                                    : Colors.black,
-                                          ),
-                                          child: Text(
-                                            'Employees Hired by Quarter',
-                                            style: TextStyle(
-                                                color: _employeesHiredHovered
-                                                    ? Colors.black
-                                                    : const Color(0xFFC0D731),
-                                                fontWeight: FontWeight.bold,
-                                                decoration:
-                                                    _departmentsOverMeanHovered
-                                                        ? TextDecoration
-                                                            .underline
-                                                        : null,
-                                                decorationThickness: 2.0),
-                                          ),
-                                        )
-                                      : Container(),
-                                  _activeEntity == Entity.departments
-                                      ? ElevatedButton(
-                                          onPressed: () async {
-                                            List departmentsOverHiringMeaan =
-                                                await DepartmentsService()
-                                                    .departmentsOverHiringMean(
-                                                        "2021");
-                                            if (departmentsOverHiringMeaan
-                                                .isNotEmpty) {
-                                              showResultDialog(
-                                                  departmentsOverHiringMeaan);
-                                            }
-                                          },
-                                          onHover: (value) {
-                                            setState(() {
-                                              _departmentsOverMeanHovered =
-                                                  value;
-                                            });
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor:
-                                                const Color(0xFFC0D731),
-                                            backgroundColor:
-                                                _departmentsOverMeanHovered
-                                                    ? const Color(0xFFC0D731)
-                                                    : Colors.black,
-                                          ),
-                                          child: Text(
-                                            'Departments Over Hiring Mean',
-                                            style: TextStyle(
-                                                color:
-                                                    _departmentsOverMeanHovered
-                                                        ? Colors.black
-                                                        : const Color(
-                                                            0xFFC0D731),
-                                                fontWeight: FontWeight.bold,
-                                                decoration:
-                                                    _departmentsOverMeanHovered
-                                                        ? TextDecoration
-                                                            .underline
-                                                        : null,
-                                                decorationThickness: 2.0),
-                                          ),
-                                        )
-                                      : Container(),
-                                  _activeEntity == Entity.jobs
-                                      ? Container()
-                                      : const SizedBox(width: 20.0),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      FilePickerResult? result =
-                                          await FilePicker.platform.pickFiles();
-                                      if (result != null) {
-                                        final fileBytes =
-                                            result.files.single.bytes;
-                                        if (_activeEntity ==
-                                            Entity.departments) {
-                                          departmentProvider
-                                              .uploadDepartments(fileBytes!);
-                                        } else if (_activeEntity ==
-                                            Entity.employees) {
-                                          employeeProvider
-                                              .uploadEmployees(fileBytes!);
-                                        } else if (_activeEntity ==
-                                            Entity.jobs) {
-                                          jobProvider.uploadJobs(fileBytes!);
-                                        }
-                                      }
-                                    },
-                                    onHover: (value) {
-                                      setState(() {
-                                        _loadCSVHovered = value;
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: const Color(0xFFC0D731),
-                                      backgroundColor: _loadCSVHovered
-                                          ? const Color(0xFFC0D731)
-                                          : Colors.black,
-                                    ),
-                                    child: Text(
-                                      'Load ${_activeEntity.name.capitalize()} CSV File',
-                                      style: TextStyle(
-                                          color: _loadCSVHovered
-                                              ? Colors.black
-                                              : const Color(0xFFC0D731),
-                                          fontWeight: FontWeight.bold,
-                                          decoration: _loadCSVHovered
-                                              ? TextDecoration.underline
-                                              : null,
-                                          decorationThickness: 2.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      buildCRUDButtonTray(context),
                       const SliverToBoxAdapter(child: SizedBox(height: 90.0)),
                       SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: pagePadding),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width > 1250.0
+                                ? 140.0
+                                : width > 670
+                                    ? 100.0
+                                    : 10.0),
                         sliver: SliverGrid(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
+                            mainAxisExtent: 210.0,
+                            crossAxisCount: width > 1250 ? 3 : 2,
                             crossAxisSpacing: 32.0,
                             mainAxisSpacing: 30.0,
-                            childAspectRatio: _activeEntity == Entity.employees
-                                ? employeeAspectRatio
-                                : nonEmployeeAspectRatio,
+                            // childAspectRatio: _activeEntity == Entity.employees
+                            //     ? employeeAspectRatio
+                            //     : nonEmployeeAspectRatio,
                           ),
                           delegate: SliverChildBuilderDelegate(
                             childCount: _activeEntity == Entity.departments
@@ -450,6 +219,69 @@ class _CrudScreenState extends State<CrudScreen> {
     );
   }
 
+  dynamic buildCRUDButtonTray(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double padding;
+    List<Widget> firstTray = [
+      buildFilterButton(),
+      const SizedBox(width: 20.0),
+      buildAddButton(),
+      const SizedBox(width: 20.0),
+      buildDeleteButton(),
+    ];
+    List<Widget> secondTray = [
+      _activeEntity == Entity.employees
+          ? buildEmployeesByQuarterButton()
+          : Container(),
+      _activeEntity == Entity.departments
+          ? buildDepartmentsOverMeanButton()
+          : Container(),
+      _activeEntity == Entity.jobs ? Container() : const SizedBox(width: 20.0),
+      buildLoadCSVButton(),
+    ];
+    if (width > 1250) {
+      padding = 140.0;
+    } else if (width > 670) {
+      padding = 100;
+    } else {
+      padding = 10.0;
+    }
+    return Builder(
+      builder: (context) {
+        return SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          sliver: SliverToBoxAdapter(
+            child: width > 1250
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: firstTray,
+                      ),
+                      Row(
+                        children: secondTray,
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: firstTray,
+                      ),
+                      const SizedBox(height: 20.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: secondTray,
+                      )
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+
   void showAddDialog() {
     showDialog(
       barrierDismissible: true,
@@ -535,6 +367,195 @@ class _CrudScreenState extends State<CrudScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget buildFilterButton() {
+    return ElevatedButton(
+      onPressed: () {
+        showFilterDialog();
+      },
+      onHover: (value) {
+        setState(() {
+          _filterHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFFE0E0E0),
+      ),
+      child: Text(
+        'Filter',
+        style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            decoration: _filterHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
+    );
+  }
+
+  Widget buildAddButton() {
+    return ElevatedButton(
+      onPressed: () {
+        showAddDialog();
+      },
+      onHover: (value) {
+        setState(() {
+          _addHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFFE0E0E0),
+      ),
+      child: Text(
+        'Add ${_activeEntity.name}'.trimLast(),
+        style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            decoration: _addHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
+    );
+  }
+
+  Widget buildDeleteButton() {
+    EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    JobProvider jobProvider = context.read<JobProvider>();
+    return ElevatedButton(
+      onPressed: () {
+        if (_activeEntity == Entity.employees) {
+          employeeProvider.deleteAllEmployees();
+        } else if (_activeEntity == Entity.departments) {
+          departmentProvider.deleteAllDepartments();
+        } else if (_activeEntity == Entity.jobs) {
+          jobProvider.deleteAllJobs();
+        }
+      },
+      onHover: (value) {
+        setState(() {
+          _deleteHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFFE0E0E0),
+      ),
+      child: Text(
+        'Delete all ${_activeEntity.name}s'.trimLast(),
+        style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            decoration: _deleteHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
+    );
+  }
+
+  Widget buildEmployeesByQuarterButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        List employeesHiredByQuarter =
+            await EmployeesService().employeesHiredByQuarter("2021");
+        if (employeesHiredByQuarter.isNotEmpty) {
+          showResultDialog(employeesHiredByQuarter);
+        }
+      },
+      onHover: (value) {
+        setState(() {
+          _employeesHiredHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: const Color(0xFFC0D731),
+        backgroundColor:
+            _employeesHiredHovered ? const Color(0xFFC0D731) : Colors.black,
+      ),
+      child: Text(
+        'Employees Hired by Quarter',
+        style: TextStyle(
+            color:
+                _employeesHiredHovered ? Colors.black : const Color(0xFFC0D731),
+            fontWeight: FontWeight.bold,
+            decoration:
+                _departmentsOverMeanHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
+    );
+  }
+
+  Widget buildDepartmentsOverMeanButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        List departmentsOverHiringMeaan =
+            await DepartmentsService().departmentsOverHiringMean("2021");
+        if (departmentsOverHiringMeaan.isNotEmpty) {
+          showResultDialog(departmentsOverHiringMeaan);
+        }
+      },
+      onHover: (value) {
+        setState(() {
+          _departmentsOverMeanHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: const Color(0xFFC0D731),
+        backgroundColor: _departmentsOverMeanHovered
+            ? const Color(0xFFC0D731)
+            : Colors.black,
+      ),
+      child: Text(
+        'Departments Over Hiring Mean',
+        style: TextStyle(
+            color: _departmentsOverMeanHovered
+                ? Colors.black
+                : const Color(0xFFC0D731),
+            fontWeight: FontWeight.bold,
+            decoration:
+                _departmentsOverMeanHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
+    );
+  }
+
+  Widget buildLoadCSVButton() {
+    EmployeeProvider employeeProvider = context.read<EmployeeProvider>();
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    JobProvider jobProvider = context.read<JobProvider>();
+    return ElevatedButton(
+      onPressed: () async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles();
+        if (result != null) {
+          final fileBytes = result.files.single.bytes;
+          if (_activeEntity == Entity.departments) {
+            departmentProvider.uploadDepartments(fileBytes!);
+          } else if (_activeEntity == Entity.employees) {
+            employeeProvider.uploadEmployees(fileBytes!);
+          } else if (_activeEntity == Entity.jobs) {
+            jobProvider.uploadJobs(fileBytes!);
+          }
+        }
+      },
+      onHover: (value) {
+        setState(() {
+          _loadCSVHovered = value;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: const Color(0xFFC0D731),
+        backgroundColor:
+            _loadCSVHovered ? const Color(0xFFC0D731) : Colors.black,
+      ),
+      child: Text(
+        'Load ${_activeEntity.name.capitalize()} CSV File',
+        style: TextStyle(
+            color: _loadCSVHovered ? Colors.black : const Color(0xFFC0D731),
+            fontWeight: FontWeight.bold,
+            decoration: _loadCSVHovered ? TextDecoration.underline : null,
+            decorationThickness: 2.0),
+      ),
     );
   }
 }

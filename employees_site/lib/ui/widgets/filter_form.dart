@@ -20,7 +20,7 @@ class _FilterFormState extends State<FilterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 570.0,
       height: 420,
       child: Card(
