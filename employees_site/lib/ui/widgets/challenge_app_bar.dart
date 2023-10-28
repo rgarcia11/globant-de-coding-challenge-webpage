@@ -19,12 +19,21 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double padding = 10.0;
+    if (width > 1250) {
+      padding = 140.0;
+    } else if (width > 670) {
+      padding = 100;
+    } else {
+      padding = 10.0;
+    }
     return AppBar(
       automaticallyImplyLeading: false,
       scrolledUnderElevation: 0.0,
       centerTitle: false,
       title: Transform.translate(
-        offset: const Offset(140 - 15.0, 0.0),
+        offset: Offset(padding - 15.0, 0.0),
         child: InkWell(
           onTap: () {
             Navigator.of(context).pushReplacement(
@@ -52,7 +61,7 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
             ],
           ),
         ),
-      ), // Coolvetica font
+      ),
       actions: widget.landing
           ? [
               ElevatedButton(
@@ -77,12 +86,13 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(width: 140.0 - 15.0),
+              const SizedBox(width: 145.0),
             ]
           : widget.actions != null
               ? [
                   ...widget.actions!,
-                  const SizedBox(width: 140.0 - 15.0),
+                  SizedBox(
+                      width: widget.landing ? 140.0 - 15.0 : padding - 15.0),
                 ]
               : null,
     );

@@ -189,6 +189,7 @@ class EntityCard extends StatelessWidget {
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: columnContent,
     );
   }

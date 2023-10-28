@@ -28,6 +28,7 @@ class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: const ChallengeAppBar(
         landing: true,
@@ -40,51 +41,32 @@ class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
             height: double.infinity,
             width: double.infinity,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 140.0),
-            child: Row(
-              // direction: isScreenWide ? Axis.horizontal : Axis.vertical,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: Text.rich(
-                    TextSpan(
-                        style: TextStyle(
-                          fontSize: 48.0,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Let us ',
-                            style: TextStyle(
-                              shadows: [
-                                Shadow(
-                                    color: Colors.white,
-                                    offset: Offset(0, -5.0))
-                              ],
-                              color: Colors.transparent,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Color(0xFFa0f4a4),
-                              decorationThickness: 2.0,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'hire you',
-                            style: TextStyle(
-                              shadows: [
-                                Shadow(
-                                    color: Colors.white,
-                                    offset: Offset(0, -5.0))
-                              ],
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        ]),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: width > 800.0
+                    ? 140.0
+                    : width > 600
+                        ? 30.0
+                        : 10.0),
+            child: width > 1250
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      buildLandingMessage(),
+                      const HireEmployeeForm(),
+                    ],
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(height: 40.0),
+                        buildLandingMessage(),
+                        const SizedBox(height: 20.0),
+                        const HireEmployeeForm(),
+                      ],
+                    ),
                   ),
-                ), // Araboto font
-                HireEmployeeForm(),
-              ],
-            ),
           ),
         ],
       ),
@@ -92,6 +74,35 @@ class _ChallengeLandingScreenState extends State<ChallengeLandingScreen> {
   }
 }
 
+Widget buildLandingMessage() {
+  return const Center(
+    child: Text.rich(
+      TextSpan(
+          style: TextStyle(
+            fontSize: 48.0,
+          ),
+          children: [
+            TextSpan(
+              text: 'Let us ',
+              style: TextStyle(
+                shadows: [Shadow(color: Colors.white, offset: Offset(0, -5.0))],
+                color: Colors.transparent,
+                decoration: TextDecoration.underline,
+                decorationColor: Color(0xFFa0f4a4),
+                decorationThickness: 2.0,
+              ),
+            ),
+            TextSpan(
+              text: 'hire you',
+              style: TextStyle(
+                shadows: [Shadow(color: Colors.white, offset: Offset(0, -5.0))],
+                color: Colors.transparent,
+              ),
+            ),
+          ]),
+    ),
+  );
+}
 // globant green #c0d731
 // underline #a0f4a4
 // font #f8f4f4
