@@ -16,7 +16,6 @@ class FilterForm extends StatefulWidget {
 class _FilterFormState extends State<FilterForm> {
   final TextEditingController _textFieldController = TextEditingController();
   bool _button1Hovered = false;
-  bool _button2Hovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +30,11 @@ class _FilterFormState extends State<FilterForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Enter filter'),
-              const SizedBox(height: 18.0),
+              const Text(
+                'Enter filter',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
               TextField(
                 controller: _textFieldController,
                 maxLines: 6,
@@ -72,7 +74,8 @@ class _FilterFormState extends State<FilterForm> {
                         } else if (widget.activeEntity == Entity.jobs) {
                           jobProvider.filter(_textFieldController.text.trim());
                         }
-                        Navigator.of(context).pop();
+                        Navigator.of(context)
+                            .pop<bool>(_textFieldController.text.isNotEmpty);
                       }
                     },
                     onHover: (value) {
@@ -88,41 +91,6 @@ class _FilterFormState extends State<FilterForm> {
                     ),
                     child: const Text(
                       'Filter',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (context.mounted) {
-                        DepartmentProvider departmentProvider =
-                            context.read<DepartmentProvider>();
-                        EmployeeProvider employeeProvider =
-                            context.read<EmployeeProvider>();
-                        JobProvider jobProvider = context.read<JobProvider>();
-                        if (widget.activeEntity == Entity.employees) {
-                          employeeProvider.filter('');
-                        } else if (widget.activeEntity == Entity.departments) {
-                          departmentProvider.filter('');
-                        } else if (widget.activeEntity == Entity.jobs) {
-                          jobProvider.filter('');
-                        }
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    onHover: (value) {
-                      setState(() {
-                        _button2Hovered = value;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: const Color(0xFFC0D731),
-                      backgroundColor: _button2Hovered
-                          ? const Color(0xFF8cc53f)
-                          : const Color(0xFFC0D731),
-                    ),
-                    child: const Text(
-                      'Remove filter',
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                     ),
