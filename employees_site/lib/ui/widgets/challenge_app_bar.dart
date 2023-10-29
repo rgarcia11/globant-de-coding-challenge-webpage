@@ -44,16 +44,16 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
           },
           child: Row(
             children: [
-              const Text(
+              Text(
                 'Globant',
                 style: TextStyle(
-                    fontSize: 28.0,
+                    fontSize: width < 800 ? 22.0 : 28.0,
                     fontFamily: 'Ubuntu',
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                  width: 27.0,
-                  height: 27.0,
+                  width: width < 800 ? 20.0 : 27.0,
+                  height: width < 800 ? 20.0 : 27.0,
                   child: Image.asset(
                     'assets/Logo.png',
                     fit: BoxFit.contain,
@@ -86,13 +86,12 @@ class _ChallengeAppBarState extends State<ChallengeAppBar> {
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(width: 145.0),
+              SizedBox(width: padding),
             ]
           : widget.actions != null
               ? [
                   ...widget.actions!,
-                  SizedBox(
-                      width: widget.landing ? 140.0 - 15.0 : padding - 15.0),
+                  SizedBox(width: widget.landing ? 140.0 - 15.0 : padding),
                 ]
               : null,
     );

@@ -43,6 +43,9 @@ class _CrudScreenState extends State<CrudScreen> {
   bool _deleteHovered = false;
   bool _employeesHiredHovered = false;
   bool _departmentsOverMeanHovered = false;
+  bool _departmentsActiveFilter = false;
+  bool _jobsActiveFilter = false;
+  bool _employeesActiveFilter = false;
   double pagePadding = 140.0;
   @override
   void initState() {
@@ -224,9 +227,9 @@ class _CrudScreenState extends State<CrudScreen> {
     double padding;
     List<Widget> firstTray = [
       buildFilterButton(),
-      const SizedBox(width: 20.0),
+      SizedBox(width: width > 670 ? 20.0 : 5.0),
       buildAddButton(),
-      const SizedBox(width: 20.0),
+      SizedBox(width: width > 670 ? 20.0 : 5.0),
       buildDeleteButton(),
     ];
     List<Widget> secondTray = [
@@ -236,7 +239,9 @@ class _CrudScreenState extends State<CrudScreen> {
       _activeEntity == Entity.departments
           ? buildDepartmentsOverMeanButton()
           : Container(),
-      _activeEntity == Entity.jobs ? Container() : const SizedBox(width: 20.0),
+      _activeEntity == Entity.jobs
+          ? Container()
+          : SizedBox(width: width > 670 ? 20.0 : 5.0),
       buildLoadCSVButton(),
     ];
     if (width > 1250) {
@@ -292,7 +297,7 @@ class _CrudScreenState extends State<CrudScreen> {
             surfaceTintColor: Colors.white,
             content: Container(
               width: 500.0,
-              height: 500.0,
+              height: 380.0,
               color: Colors.white,
               child: AddForm(
                 activeEntity: _activeEntity,
@@ -303,7 +308,7 @@ class _CrudScreenState extends State<CrudScreen> {
   }
 
   void showFilterDialog() {
-    showDialog(
+    showDialog<bool>(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
@@ -312,14 +317,24 @@ class _CrudScreenState extends State<CrudScreen> {
             surfaceTintColor: Colors.white,
             content: Container(
               width: 500.0,
-              height: 500.0,
+              height: 380.0,
               color: Colors.white,
               child: FilterForm(
                 activeEntity: _activeEntity,
               ),
             ));
       },
-    );
+    ).then((bool? value) {
+      if (value != null && value) {
+        if (_activeEntity == Entity.departments) {
+          _departmentsActiveFilter = value;
+        } else if (_activeEntity == Entity.employees) {
+          _employeesActiveFilter = value;
+        } else if (_activeEntity == Entity.jobs) {
+          _jobsActiveFilter = value;
+        }
+      }
+    });
   }
 
   void showResultDialog(List table) {
@@ -371,9 +386,34 @@ class _CrudScreenState extends State<CrudScreen> {
   }
 
   Widget buildFilterButton() {
+    DepartmentProvider departmentProvider = context.read<DepartmentProvider>();
+    EmployeeProvider employeesProvider = context.read<EmployeeProvider>();
+    JobProvider jobsProvider = context.read<JobProvider>();
     return ElevatedButton(
       onPressed: () {
-        showFilterDialog();
+        if (_activeEntity == Entity.departments) {
+          if (_departmentsActiveFilter) {
+            departmentProvider.filter('');
+            _departmentsActiveFilter = false;
+          } else {
+            showFilterDialog();
+          }
+        } else if (_activeEntity == Entity.employees) {
+          if (_employeesActiveFilter) {
+            employeesProvider.filter('');
+            _employeesActiveFilter = false;
+          } else {
+            showFilterDialog();
+          }
+        }
+        if (_activeEntity == Entity.jobs) {
+          if (_jobsActiveFilter) {
+            jobsProvider.filter('');
+            _jobsActiveFilter = false;
+          } else {
+            showFilterDialog();
+          }
+        }
       },
       onHover: (value) {
         setState(() {
@@ -381,16 +421,45 @@ class _CrudScreenState extends State<CrudScreen> {
         });
       },
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: const Color(0xFFE0E0E0),
+        foregroundColor:
+            _activeEntity == Entity.departments && _departmentsActiveFilter
+                ? Colors.white
+                : _activeEntity == Entity.employees && _employeesActiveFilter
+                    ? Colors.white
+                    : _activeEntity == Entity.jobs && _jobsActiveFilter
+                        ? Colors.white
+                        : Colors.black,
+        backgroundColor:
+            _activeEntity == Entity.departments && _departmentsActiveFilter
+                ? Colors.black
+                : _activeEntity == Entity.employees && _employeesActiveFilter
+                    ? Colors.black
+                    : _activeEntity == Entity.jobs && _jobsActiveFilter
+                        ? Colors.black
+                        : const Color(0xFFE0E0E0),
       ),
       child: Text(
         'Filter',
         style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            decoration: _filterHovered ? TextDecoration.underline : null,
-            decorationThickness: 2.0),
+          color: _activeEntity == Entity.departments && _departmentsActiveFilter
+              ? Colors.white
+              : _activeEntity == Entity.employees && _employeesActiveFilter
+                  ? Colors.white
+                  : _activeEntity == Entity.jobs && _jobsActiveFilter
+                      ? Colors.white
+                      : Colors.black,
+          fontWeight: FontWeight.bold,
+          decoration: _filterHovered ? TextDecoration.underline : null,
+          decorationThickness: 2.0,
+          decorationColor:
+              _activeEntity == Entity.departments && _departmentsActiveFilter
+                  ? Colors.white
+                  : _activeEntity == Entity.employees && _employeesActiveFilter
+                      ? Colors.white
+                      : _activeEntity == Entity.jobs && _jobsActiveFilter
+                          ? Colors.white
+                          : Colors.black,
+        ),
       ),
     );
   }
