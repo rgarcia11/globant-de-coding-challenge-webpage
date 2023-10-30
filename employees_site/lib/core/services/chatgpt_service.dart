@@ -45,7 +45,7 @@ class ChatGPTService {
         }),
       );
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
     try {
       if (res.statusCode == 200) {
@@ -56,7 +56,7 @@ class ChatGPTService {
       }
       return 'An internal error occurred: $res, ${res.body}';
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
   }
 
@@ -101,7 +101,7 @@ class ChatGPTService {
         }),
       );
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
     try {
       if (res.statusCode == 200) {
@@ -112,7 +112,7 @@ class ChatGPTService {
       }
       return 'An internal error occurred: $res, ${res.body}';
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
   }
 
@@ -152,7 +152,7 @@ class ChatGPTService {
         }),
       );
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
     try {
       if (res.statusCode == 200) {
@@ -163,7 +163,7 @@ class ChatGPTService {
       }
       return 'An internal error occurred: $res, ${res.body}';
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
   }
 
@@ -203,7 +203,7 @@ class ChatGPTService {
         }),
       );
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
     try {
       if (res.statusCode == 200) {
@@ -214,7 +214,7 @@ class ChatGPTService {
       }
       return 'An internal error occurred: $res, ${res.body}';
     } catch (e) {
-      return e.toString();
+      return '$e';
     }
   }
 }

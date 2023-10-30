@@ -88,6 +88,9 @@ class _HireEmployeeFormState extends State<HireEmployeeForm> {
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: () async {
+                  print('TextController:');
+                  print(_textFieldController.text);
+                  print(_textFieldController.value);
                   showDialog(
                     barrierDismissible: false,
                     context: context,
